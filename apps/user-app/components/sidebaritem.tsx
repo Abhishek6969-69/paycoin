@@ -16,7 +16,7 @@ export default function Sidebaritem({
         router.push(href);
       }}
     >
-      <div className=" flex gap-10 p-4 px-6 w-[250px] hover:cursor-pointer">
+      <div className=" my-7 flex gap-2 md:gap-10 md:p-4 md:px-6 w-screen md:w-[250px] hover:cursor-pointer">
         <div>{icon}</div>
         <div>{title}</div>
       </div>

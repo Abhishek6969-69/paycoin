@@ -1,5 +1,5 @@
 "use client";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { Card } from "@repo/ui/card";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -48,7 +48,7 @@ const FakeBankPayment = () => {
 
       
 
-const response=await Webhookcall({token,amount,user_identifier})
+await Webhookcall({token,amount,user_identifier})
 setTimeout(() => {
     router.push("http://localhost:3001/transactions");
 },3000);

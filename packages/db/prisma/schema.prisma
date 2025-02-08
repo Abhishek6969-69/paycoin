@@ -14,6 +14,7 @@ model User {
   name              String?
   number            String              @unique
   password          String
+  profileImage      String?
   OnRampTransaction OnRampTransaction[]
   Balance           Balance[]
   sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")
@@ -55,6 +56,7 @@ model Balance {
   locked Int
   user   User @relation(fields: [userId], references: [id])
 }
+
 
 enum AuthType {
   Google

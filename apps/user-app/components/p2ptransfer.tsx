@@ -20,7 +20,10 @@ export default async function p2ptransferserver() {
     
     const transfer=await db.p2pTransfer.findMany({ 
       where:{
-        fromUserId:Number(session?.user?.id)
+        OR:[{
+        fromUserId:Number(session?.user?.id)},
+        {toUserId:Number(session?.user?.id)
+        }]
       }
   })
   return {transfer,session}

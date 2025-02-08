@@ -4,9 +4,12 @@ import p2ptransferserver from "../../../components/p2ptransfer";
 import dynamic from "next/dynamic";
 import "chart.js/auto";
 import { Card } from "@repo/ui/card";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import { Shimmer } from "components/shimmer";
-import Userdetailcard from "components/userdetailcard";
+// import Userdetailcard from "components/profile";
+import userdetailservercomponent from "components/userdetailservercomponent";
+import Image from "next/image";
+
 interface UserSession {
   user: {
     name: string | null;
@@ -28,10 +31,12 @@ const LineChart = () => {
   const [transfers, setTransfers] = useState<
     { id: number; amount: number; timestamp: Date | string; fromUserId: number; toUserId: number }[]
   >([]);
+
   const [labels, setLabels] = useState<string[]>([]);
   const [data1, setData] = useState<number[]>([]);
   const[loading,setloading]=useState<boolean>(true);
-  const [session1,setsession1]=useState<UserSession>()
+  const [session1]=useState<UserSession>()
+  const[user,setuser]=useState<any>()
 const[sum,setsum]=useState<number>(0)
   // Fetch transfer data
   useEffect(() => {
@@ -39,8 +44,9 @@ const[sum,setsum]=useState<number>(0)
         try {
           
             const transferData1 = await p2ptransferserver(); // Await the function
-          const{session,transfer}=transferData1
-          setsession1(session)
+          const{transfer}=transferData1
+          const valsess=await userdetailservercomponent()
+          setuser(valsess)
           const transferData=transfer;
              console.log(transfer,"p2p")
              setloading(false)
@@ -64,7 +70,7 @@ const[sum,setsum]=useState<number>(0)
 
     fetchTransfers();
 }, []);
-const session= getSession();
+
   // Process data when `transfers` change
   useEffect(() => {
     if (transfers.length === 0) return;
@@ -101,7 +107,7 @@ const session= getSession();
     return <Shimmer />;
   }
   return (
-   
+   <div>
     <div  className=" p-5   flex       ">
     
       <Card title="Payment Statstics" className="text-[#333333] bg-[FBFBFB] w-[500px]">
@@ -116,11 +122,29 @@ const session= getSession();
       </div>
       </Card>
       <div>
-        <Userdetailcard  session1={session1}/>
+        {/* {JSON.stringify(user)} */}
+        {/* <Userdetailcard  session1={session1}/> */}
+        <Card title="User Detail" className="w-[450px]">
+          <div>
+            <div className=" flex justify-center items-center">
+              {user?.profileImage && (
+                <Image className="rounded-full w-[100px] object-cover h-[100px] " src={user.profileImage} alt="user" height={150} width={150} />
+              )}
+            </div>
+            <div className="mt-6 ">
+           <div className=" text-2xl flex justify-between "> <h1><span className=" font-bold">Name:</span> {user?.name || "User"}</h1></div>
+            <div className=" mt-3 text-2xl flex justify-between"> <h1><span className=" font-bold">Phone:</span> {user?.number || "0000000000"}</h1></div>
+            </div>
+            
+          </div>
+        </Card>
         </div>
     
     </div>
-   
+    <div>
+    
+    </div>
+    </div>
     
 
   );

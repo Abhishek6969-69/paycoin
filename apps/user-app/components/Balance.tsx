@@ -4,9 +4,12 @@ export const BalanceCard = ({amount, locked}: {
     amount: number;
     locked: number;
 }) => {
+   
+   
     return <Card title={"Balance"} className="border p-4  rounded   mx-4">
         <div className="flex justify-between border-b border-slate-300 pb-2">
             <div>
+                
                 Unlocked balance
             </div>
             <div>

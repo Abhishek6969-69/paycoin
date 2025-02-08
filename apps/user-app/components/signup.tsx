@@ -43,35 +43,35 @@ export default function SignInPage() {
     };
 
     return (
-        <div className=" flex items-center justify-center min-h-screen bg-[#02008A] text-gray-500">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+        <div className=" flex items-center justify-center min-h-screen  bg-[#02008A] text-black ">
+            <div className="md:w-full mb-36 md:mb-2 w-[270px]  max-w-md p-8 bg-white rounded-lg shadow-md">
                 <h2 className="text-2xl font-semibold text-center">Sign Up</h2>
                 {error && <p className="text-red-500 text-sm mt-2">{decodeURIComponent(error)}</p>}
                 {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
 
-                <form onSubmit={handleSignIn} className="space-y-4">
-                    <div className="ml-5">
-                        <Label label="Name" className="ml-1" />
+                <form onSubmit={handleSignIn} className="space-y-4 ">
+                    <div className="ml-1 md:ml-5 ">
+                        <Label label="Name" className="ml-0   md:ml-1" />
                         <Input
-                            className="w-[350px]"
+                            className="w-[200px] md:w-[330px]"
                             placeholder="Your full name"
                             type="text"
                             onChange={(value) => setData({ ...data, name: value })}
                         />
                     </div>
-                    <div className="ml-5">
-                        <Label label="Phone Number" className="ml-1" />
+                    <div className="ml-1 md:ml-5">
+                        <Label label="Phone Number" className="ml-0   md:ml-1" />
                         <Input
-                            className="w-[350px]"
+                            className="w-[200px] md:w-[330px]"
                             placeholder="9696694046"
                             type="tel"
                             onChange={(value) => setData({ ...data, phone: value })}
                         />
                     </div>
-                    <div className="ml-5">
-                        <Label label="Password" className="ml-1" />
+                    <div className="ml-1 md:ml-5">
+                        <Label label="Password" className="ml-0   md:ml-1" />
                         <Input
-                            className="w-[350px]"
+                            className="w-[200px] md:w-[330px]"
                             type="password"
                             placeholder="••••••"
                             onChange={(value) => setData({ ...data, password: value })}
@@ -79,8 +79,8 @@ export default function SignInPage() {
                     </div>
                     <Button type="submit" onClick={(e)=>{
                     
-                        handleSignIn(e)}}  className="w-full text-white  bg-[#02008A]">
-                        {loading ? "Signing in..." : "Sign In"}
+                        handleSignIn(e)}}  className=" ml-0   md:ml-5 w-[200px] md:w-[330px] text-white  bg-[#02008A]">
+                        {loading ? "Signing in..." : "Sign Up"}
                     </Button>
                 </form>
 

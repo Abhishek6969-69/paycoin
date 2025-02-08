@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+    ],
+  },
   transpilePackages: ["@repo/ui"],
   webpack: (config) => {
     config.module.rules.push({
@@ -9,3 +18,5 @@ module.exports = {
     return config;
   }
 };
+
+module.exports = nextConfig;
