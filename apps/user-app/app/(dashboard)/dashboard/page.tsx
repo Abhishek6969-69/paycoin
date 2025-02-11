@@ -108,38 +108,38 @@ const[sum,setsum]=useState<number>(0)
   }
   return (
    <div>
-    <div  className=" p-5   flex       ">
-    
-      <Card title="Payment Statstics" className="text-[#333333] bg-[FBFBFB] w-[500px]">
-       
-      <h1 className=" text-xl mb-6 ml-12 mt-2">General Payment</h1>
-      <h1 className=" text-xl mb-6 ml-12 mt-5">₹{sum}.000  Money sent from {session1?.user.name || "User"} Account</h1>
-      <div className=" text-white w-[400px]    ">
-      <Line data={data} />
-     
-     
-      
-      </div>
-      </Card>
-      <div>
-        {/* {JSON.stringify(user)} */}
-        {/* <Userdetailcard  session1={session1}/> */}
-        <Card title="User Detail" className="w-[450px]">
-          <div>
-            <div className=" flex justify-center items-center">
-              {user?.profileImage && (
-                <Image className="rounded-full w-[100px] object-cover h-[100px] " src={user.profileImage} alt="user" height={150} width={150} />
-              )}
-            </div>
-            <div className="mt-6 ">
-           <div className=" text-2xl flex justify-between "> <h1><span className=" font-bold">Name:</span> {user?.name || "User"}</h1></div>
-            <div className=" mt-3 text-2xl flex justify-between"> <h1><span className=" font-bold">Phone:</span> {user?.number || "0000000000"}</h1></div>
-            </div>
-            
-          </div>
-        </Card>
+    <div className="p-3 md:p-5 flex flex-col md:flex-row gap-4">
+      <Card title="Payment Statistics" className="text-[#333333] bg-[FBFBFB] w-full md:w-[500px]">
+        <h1 className="text-xl mb-6 ml-4 md:ml-12 mt-2">General Payment</h1>
+        <h1 className="text-xl mb-6 ml-4 md:ml-12 mt-5">₹{sum}.000 Money sent from {session1?.user.name || "User"} Account</h1>
+        <div className="text-white w-full md:w-[400px]">
+          <Line data={data} />
         </div>
-    
+      </Card>
+
+      <Card title="User Detail" className="w-full md:w-[450px]">
+        <div>
+          <div className="flex justify-center items-center">
+            {user?.profileImage && (
+              <Image 
+                className="rounded-full w-[80px] md:w-[100px] h-[80px] md:h-[100px] object-cover" 
+                src={user.profileImage} 
+                alt="user" 
+                height={150} 
+                width={150} 
+              />
+            )}
+          </div>
+          <div className="mt-6">
+            <div className="text-lg md:text-2xl flex flex-col md:flex-row justify-between">
+              <h1><span className="font-bold">Name:</span> {user?.name || "User"}</h1>
+            </div>
+            <div className="mt-3 text-lg md:text-2xl flex flex-col md:flex-row justify-between">
+              <h1><span className="font-bold">Phone:</span> {user?.number || "0000000000"}</h1>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
     <div>
     
