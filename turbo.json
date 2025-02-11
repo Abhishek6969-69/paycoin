@@ -4,19 +4,9 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
-        "CLOUDINARY_API_KEY",
-        "CLOUDINARY_API_SECRET",
-        "NEXT_PUBLIC_API_URL",
-        "NEXTAUTH_URL",
-        "JWT_SECRET"
-      ]
+      "outputs": [".next/**", "!.next/cache/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
+    "lint": {},
     "dev": {
       "cache": false,
       "persistent": true

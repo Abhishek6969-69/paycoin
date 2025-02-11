@@ -2,11 +2,14 @@
   "name": "week-18",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prisma:generate": "cd db/packages/db && npx prisma generate &&  cd ../.."
+    "prisma:generate": "cd packages/db && npx prisma generate",
+    "start-user-app": "cd apps/user-app && next start",
+    "start-bank-server": "cd apps/bank-server && npm start",
+    "start-bank-webhook": "cd apps/bank-webhook && npm start"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
