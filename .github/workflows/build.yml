@@ -36,4 +36,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: your-dockerhub-username/repository-name:latest
+          tags: sbh123yadav/coinpay:latest
