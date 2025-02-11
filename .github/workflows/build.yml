@@ -3,6 +3,11 @@ on:
   pull_request:
     branches:
       - master
+      - main
+  push:
+    branches:
+      - master
+      - main
 
 jobs:
   build:
@@ -35,5 +40,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
-          tags: your-dockerhub-username/repository-name:latest
+          tags: sbh123yadav/coinpay:latest
