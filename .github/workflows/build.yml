@@ -1,22 +1,15 @@
-name: build succeed on PR
+name: Build on PR
+
 on:
   pull_request:
     branches:
       - master
-      - main
-  push:
-    branches:
-      - master
-      - main
 
 jobs:
   build:
-    name: build the project
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v3
-      
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,22 +17,8 @@ jobs:
       
       - name: Install Dependencies
         run: npm install
-        
-      # - name: Generate prisma client
-      #   run: cd db/packages/db && npx prisma generate && cd ../..
-      
+
+      -name:Generate prisma client
+        run: cd db/packages/db && npx prisma generate && cd ../../
       - name: Run Build
         run: npm run build
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: sbh123yadav/coinpay:latest
