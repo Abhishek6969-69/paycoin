@@ -17,7 +17,14 @@
     "next.config.js",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "components/**/*.d.ts",
+    "lib/**/*.d.ts",
+    "pages",
+    "next-env.d.ts",
+    "**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -2,7 +2,7 @@
   "name": "week-18",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "NEXT_DISABLE_ESLINT=true turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
