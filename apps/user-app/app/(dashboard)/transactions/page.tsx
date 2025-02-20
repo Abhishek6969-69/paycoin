@@ -50,7 +50,7 @@ async function getOnRampTransactions() {
         }
     });
     
-    return txns.map(t => ({
+    return txns.map((t:any) => ({
         key:t.id,
         time: t.startTime,
         amount: t.amount,

@@ -7,18 +7,21 @@ import { useSession } from "next-auth/react";
 // import { Image } from "next/image";
 import userdetailservercomponent from "./userdetailservercomponent";
 import { useEffect } from "react";
-interface UserSession {
-  user: {
-    name: string | null;
-    email: string;
-    id: string;
-    token: string;
-    image: string;
-  };
+// interface UserSession {
+//   user: {
+//     name: string | null;
+//     email: string;
+//     id: string;
+//     token: string;
+//     image: string;
+//   };
+// }
+interface ProfileSectionProps {
+  userData: any;
+  onClose: () => void;
 }
 
-
-export default function  Profilesection({userData, onClose}:{userData:UserSession, onClose:()=>void}) {
+export default function  Profilesection({userData, onClose}:ProfileSectionProps) {
   const { data: session} = useSession();
   const [file, setFile] = useState<File | null>(null);
 

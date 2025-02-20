@@ -1,10 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": ["apps/user-app/.next/**",
+        "apps/bank-server/dist/**",
+        "apps/bank-webhook/dist/**"],
       "env": [
         "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
