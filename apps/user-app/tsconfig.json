@@ -8,7 +8,8 @@
     ],
     "baseUrl": ".",  
     "paths": {
-      "@repo/store": ["../../packages/store/src"]
+      "@repo/store": ["../../packages/store/src"],
+      "@repo/db/*": ["../../packages/db/src/*"]
     }
   },
   "include": [
