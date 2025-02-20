@@ -15,7 +15,12 @@
         "CLOUDINARY_API_SECRET",
         "NEXT_PUBLIC_API_URL",
         "NEXTAUTH_URL",
-        "JWT_SECRET"
+        "JWT_SECRET",
+        "WEBHOOK_URL",
+        "BANKSERVER_URL",
+        "PORT"
+
+
       ]
     },
     "lint": {

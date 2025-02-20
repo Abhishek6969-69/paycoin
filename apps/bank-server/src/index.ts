@@ -44,6 +44,6 @@ app.post("/confirm-payment", async (req:any, res:any) => {
 });
 
 
-app.listen(3004, () => {
+app.listen(process.env.PORT || 3004, () => {
    
 });
