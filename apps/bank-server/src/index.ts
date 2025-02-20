@@ -19,7 +19,7 @@ app.post("/dummy", async (req:any, res:any) => {
     transactions[token] = {
         user_identifier,
         amount: Number(amount),
-        webhookUrl: "http://localhost:3003/hdfcWebhook",
+        webhookUrl: process.env.WEBHOOK_URL || "",
         status: "Pending"
     };
  return   res.json({ message: "Transaction created" });
@@ -31,7 +31,7 @@ app.get("/transactions", async (req:any, res:any) => {
 app.post("/confirm-payment", async (req:any, res:any) => {
     const { amount, user_identifier, token } = req.body;
     try {
-        await axios.post("http://localhost:3003/hdfcWebhook", {
+        await axios.post(process.env.WEBHOOK_URL || "", {
             user_identifier:user_identifier.toString(),
             amount,
             token
