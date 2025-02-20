@@ -1,7 +1,7 @@
 {
   "name": "bank-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "node dist/index.js",
@@ -17,5 +17,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.3"
   }
 }
