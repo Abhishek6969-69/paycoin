@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default async function Fakebanking() {
     try {
-        const response = await axios.get("http://localhost:3004/transactions");
+        const response = await axios.get(`${process.env.BANKSERVER_URL || ""}/transactions`);
         return response.data; // Return the fetched data
     } catch (error) {
         console.error("Error fetching transactions:", error);

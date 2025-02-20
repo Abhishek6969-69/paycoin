@@ -14,7 +14,7 @@ const FakeBankPayment = () => {
   useEffect(() => {
     const fetchTransaction = async () => {
       try {
-        const response = await axios.get("http://localhost:3004/transactions");
+        const response = await axios.get(`${process.env.BANKSERVER_URL || ""}/transactions`);
         
         setTransactions(response.data);
       } catch (error) {
