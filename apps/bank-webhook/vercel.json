@@ -1,7 +1,14 @@
 {
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist",
-    "builds": [{ "src": "dist/index.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)", "dest": "dist/index.js" }]
+    "version": 2,
+    "builds": [
+      {
+        "src": "src/index.ts",
+        "use": "@vercel/node",
+        "config": { "outputDirectory": "dist" }
+      }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "dist/index.js" }
+    ]
   }
   
