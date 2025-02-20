@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST='{"app/(dashboard)/dashboard/page.tsx -> react-chartjs-2":{"id":3175,"files":["static/chunks/175.078683676a0bf92a.js"]}}';
