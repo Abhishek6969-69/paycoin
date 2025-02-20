@@ -4,10 +4,11 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["apps/user-app/.next",
+      "outputs": [
   "apps/user-app/.next/**",
-  "apps/bank-server/dist",
-  "apps/bank-webhook/dist"],
+  "apps/bank-server/dist/**",
+  "apps/bank-webhook/dist/**"
+],
       "env": [
         "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
