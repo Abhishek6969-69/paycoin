@@ -26,6 +26,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@prisma/client": "^6.4.1",
     "chart.js": "^4.4.7",
     "next-auth": "^4.24.11",
     "react-chartjs-2": "^5.3.0"
