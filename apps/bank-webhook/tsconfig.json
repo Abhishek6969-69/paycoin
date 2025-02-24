@@ -1,7 +1,12 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "moduleResolution": "node16",
+    "baseUrl": "../../",
+    "paths": {
+      "@repo/db/*": ["packages/db/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
