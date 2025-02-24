@@ -15630,6 +15630,7 @@ var require_get_intrinsic = __commonJS({
       "%eval%": eval,
       // eslint-disable-line no-eval
       "%EvalError%": $EvalError,
+      "%Float16Array%": typeof Float16Array === "undefined" ? undefined2 : Float16Array,
       "%Float32Array%": typeof Float32Array === "undefined" ? undefined2 : Float32Array,
       "%Float64Array%": typeof Float64Array === "undefined" ? undefined2 : Float64Array,
       "%FinalizationRegistry%": typeof FinalizationRegistry === "undefined" ? undefined2 : FinalizationRegistry,
@@ -25248,12 +25249,11 @@ var require_browser5 = __commonJS({
 var require_has_flag = __commonJS({
   "../../node_modules/has-flag/index.js"(exports2, module2) {
     "use strict";
-    module2.exports = (flag, argv) => {
-      argv = argv || process.argv;
+    module2.exports = (flag, argv = process.argv) => {
       const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-      const pos = argv.indexOf(prefix + flag);
-      const terminatorPos = argv.indexOf("--");
-      return pos !== -1 && (terminatorPos === -1 ? true : pos < terminatorPos);
+      const position = argv.indexOf(prefix + flag);
+      const terminatorPosition = argv.indexOf("--");
+      return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
     };
   }
 });
@@ -25263,16 +25263,23 @@ var require_supports_color = __commonJS({
   "../../node_modules/supports-color/index.js"(exports2, module2) {
     "use strict";
     var os = require("os");
+    var tty = require("tty");
     var hasFlag = require_has_flag();
-    var env = process.env;
+    var { env } = process;
     var forceColor;
-    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false")) {
-      forceColor = false;
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
+      forceColor = 0;
     } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
-      forceColor = true;
+      forceColor = 1;
     }
     if ("FORCE_COLOR" in env) {
-      forceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;
+      if (env.FORCE_COLOR === "true") {
+        forceColor = 1;
+      } else if (env.FORCE_COLOR === "false") {
+        forceColor = 0;
+      } else {
+        forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
+      }
     }
     function translateLevel(level) {
       if (level === 0) {
@@ -25285,8 +25292,8 @@ var require_supports_color = __commonJS({
         has16m: level >= 3
       };
     }
-    function supportsColor(stream) {
-      if (forceColor === false) {
+    function supportsColor(haveStream, streamIsTTY) {
+      if (forceColor === 0) {
         return 0;
       }
       if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
@@ -25295,19 +25302,22 @@ var require_supports_color = __commonJS({
       if (hasFlag("color=256")) {
         return 2;
       }
-      if (stream && !stream.isTTY && forceColor !== true) {
+      if (haveStream && !streamIsTTY && forceColor === void 0) {
         return 0;
       }
-      const min = forceColor ? 1 : 0;
+      const min = forceColor || 0;
+      if (env.TERM === "dumb") {
+        return min;
+      }
       if (process.platform === "win32") {
         const osRelease = os.release().split(".");
-        if (Number(process.versions.node.split(".")[0]) >= 8 && Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+        if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
           return Number(osRelease[2]) >= 14931 ? 3 : 2;
         }
         return 1;
       }
       if ("CI" in env) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
           return 1;
         }
         return min;
@@ -25336,19 +25346,16 @@ var require_supports_color = __commonJS({
       if ("COLORTERM" in env) {
         return 1;
       }
-      if (env.TERM === "dumb") {
-        return min;
-      }
       return min;
     }
     function getSupportLevel(stream) {
-      const level = supportsColor(stream);
+      const level = supportsColor(stream, stream && stream.isTTY);
       return translateLevel(level);
     }
     module2.exports = {
       supportsColor: getSupportLevel,
-      stdout: getSupportLevel(process.stdout),
-      stderr: getSupportLevel(process.stderr)
+      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
     };
   }
 });
@@ -29247,7 +29254,7 @@ app.post("/confirm-payment", async (req, res) => {
     res.status(500).json({ error: "Webhook call failed" });
   }
 });
-app.listen(3004, () => {
+app.listen(process.env.PORT || 3004, () => {
 });
 /*! Bundled license information:
 
