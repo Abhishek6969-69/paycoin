@@ -22747,9 +22747,9 @@ var require_cookie_signature = __commonJS({
   }
 });
 
-// ../../node_modules/cookie/index.js
+// ../../node_modules/express/node_modules/cookie/index.js
 var require_cookie = __commonJS({
-  "../../node_modules/cookie/index.js"(exports2) {
+  "../../node_modules/express/node_modules/cookie/index.js"(exports2) {
     "use strict";
     exports2.parse = parse;
     exports2.serialize = serialize;
@@ -26060,6 +26060,7 @@ var require_axios = __commonJS({
   "../../node_modules/axios/dist/node/axios.cjs"(exports2, module2) {
     "use strict";
     var FormData$1 = require_form_data();
+    var crypto = require("crypto");
     var url = require("url");
     var proxyFromEnv = require_proxy_from_env();
     var http = require("http");
@@ -26073,6 +26074,7 @@ var require_axios = __commonJS({
       return e && typeof e === "object" && "default" in e ? e : { "default": e };
     }
     var FormData__default = /* @__PURE__ */ _interopDefaultLegacy(FormData$1);
+    var crypto__default = /* @__PURE__ */ _interopDefaultLegacy(crypto);
     var url__default = /* @__PURE__ */ _interopDefaultLegacy(url);
     var proxyFromEnv__default = /* @__PURE__ */ _interopDefaultLegacy(proxyFromEnv);
     var http__default = /* @__PURE__ */ _interopDefaultLegacy(http);
@@ -26341,21 +26343,6 @@ var require_axios = __commonJS({
     var toFiniteNumber = (value, defaultValue) => {
       return value != null && Number.isFinite(value = +value) ? value : defaultValue;
     };
-    var ALPHA = "abcdefghijklmnopqrstuvwxyz";
-    var DIGIT = "0123456789";
-    var ALPHABET = {
-      DIGIT,
-      ALPHA,
-      ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-    };
-    var generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-      let str = "";
-      const { length } = alphabet;
-      while (size--) {
-        str += alphabet[Math.random() * length | 0];
-      }
-      return str;
-    };
     function isSpecCompliantForm(thing) {
       return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === "FormData" && thing[Symbol.iterator]);
     }
@@ -26454,8 +26441,6 @@ var require_axios = __commonJS({
       findKey,
       global: _global,
       isContextDefined,
-      ALPHABET,
-      generateString,
       isSpecCompliantForm,
       toJSONObject,
       isAsyncFn,
@@ -26771,6 +26756,23 @@ var require_axios = __commonJS({
       clarifyTimeoutError: false
     };
     var URLSearchParams = url__default["default"].URLSearchParams;
+    var ALPHA = "abcdefghijklmnopqrstuvwxyz";
+    var DIGIT = "0123456789";
+    var ALPHABET = {
+      DIGIT,
+      ALPHA,
+      ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
+    };
+    var generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
+      let str = "";
+      const { length } = alphabet;
+      const randomValues = new Uint32Array(size);
+      crypto__default["default"].randomFillSync(randomValues);
+      for (let i = 0; i < size; i++) {
+        str += alphabet[randomValues[i] % length];
+      }
+      return str;
+    };
     var platform$1 = {
       isNode: true,
       classes: {
@@ -26778,6 +26780,8 @@ var require_axios = __commonJS({
         FormData: FormData__default["default"],
         Blob: typeof Blob !== "undefined" && Blob || null
       },
+      ALPHABET,
+      generateString,
       protocols: ["http", "https", "file", "data"]
     };
     var hasBrowserEnv = typeof window !== "undefined" && typeof document !== "undefined";
@@ -27271,13 +27275,14 @@ var require_axios = __commonJS({
     function combineURLs(baseURL, relativeURL) {
       return relativeURL ? baseURL.replace(/\/?\/$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
     }
-    function buildFullPath(baseURL, requestedURL) {
-      if (baseURL && !isAbsoluteURL(requestedURL)) {
+    function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+      let isRelativeUrl = !isAbsoluteURL(requestedURL);
+      if (baseURL && isRelativeUrl || allowAbsoluteUrls == false) {
         return combineURLs(baseURL, requestedURL);
       }
       return requestedURL;
     }
-    var VERSION = "1.7.9";
+    var VERSION = "1.8.1";
     function parseProtocol(url2) {
       const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url2);
       return match && match[1] || "";
@@ -27434,7 +27439,7 @@ var require_axios = __commonJS({
       }
     };
     var readBlob$1 = readBlob;
-    var BOUNDARY_ALPHABET = utils$1.ALPHABET.ALPHA_DIGIT + "-_";
+    var BOUNDARY_ALPHABET = platform.ALPHABET.ALPHA_DIGIT + "-_";
     var textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new util__default["default"].TextEncoder();
     var CRLF = "\r\n";
     var CRLF_BYTES = textEncoder.encode(CRLF);
@@ -27477,7 +27482,7 @@ var require_axios = __commonJS({
       const {
         tag = "form-data-boundary",
         size = 25,
-        boundary = tag + "-" + utils$1.generateString(size, BOUNDARY_ALPHABET)
+        boundary = tag + "-" + platform.generateString(size, BOUNDARY_ALPHABET)
       } = options || {};
       if (!utils$1.isFormData(form)) {
         throw TypeError("FormData instance required");
@@ -28905,6 +28910,12 @@ var require_axios = __commonJS({
             }, true);
           }
         }
+        if (config.allowAbsoluteUrls !== void 0) ;
+        else if (this.defaults.allowAbsoluteUrls !== void 0) {
+          config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
+        } else {
+          config.allowAbsoluteUrls = true;
+        }
         validator.assertOptions(config, {
           baseUrl: validators.spelling("baseURL"),
           withXsrfToken: validators.spelling("withXSRFToken")
@@ -28975,7 +28986,7 @@ var require_axios = __commonJS({
       }
       getUri(config) {
         config = mergeConfig(this.defaults, config);
-        const fullPath = buildFullPath(config.baseURL, config.url);
+        const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
         return buildURL(fullPath, config.params, config.paramsSerializer);
       }
     };
@@ -29672,4 +29683,7 @@ object-assign/index.js:
   (c) Sindre Sorhus
   @license MIT
   *)
+
+axios/dist/node/axios.cjs:
+  (*! Axios v1.8.1 Copyright (c) 2025 Matt Zabriskie and contributors *)
 */

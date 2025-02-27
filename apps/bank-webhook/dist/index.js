@@ -22768,9 +22768,9 @@ var require_cookie_signature = __commonJS({
   }
 });
 
-// ../../node_modules/cookie/index.js
+// ../../node_modules/express/node_modules/cookie/index.js
 var require_cookie = __commonJS({
-  "../../node_modules/cookie/index.js"(exports2) {
+  "../../node_modules/express/node_modules/cookie/index.js"(exports2) {
     "use strict";
     exports2.parse = parse;
     exports2.serialize = serialize;
@@ -23730,9 +23730,9 @@ var require_express2 = __commonJS({
   }
 });
 
-// ../../packages/db/node_modules/@prisma/client/runtime/library.js
+// ../../node_modules/@prisma/client/runtime/library.js
 var require_library = __commonJS({
-  "../../packages/db/node_modules/@prisma/client/runtime/library.js"(exports, module) {
+  "../../node_modules/@prisma/client/runtime/library.js"(exports, module) {
     "use strict";
     var pu = Object.create;
     var Fr = Object.defineProperty;
@@ -29242,9 +29242,9 @@ ${n}`;
   }
 });
 
-// ../../packages/db/node_modules/@prisma/client/index.js
+// ../../node_modules/.prisma/client/index.js
 var require_client = __commonJS({
-  "../../packages/db/node_modules/@prisma/client/index.js"(exports2) {
+  "../../node_modules/.prisma/client/index.js"(exports2) {
     Object.defineProperty(exports2, "__esModule", { value: true });
     var {
       PrismaClientKnownRequestError: PrismaClientKnownRequestError2,
@@ -29376,7 +29376,7 @@ var require_client = __commonJS({
           "value": "prisma-client-js"
         },
         "output": {
-          "value": "/Users/abhishekyadav/Desktop/coinpay/packages/db/node_modules/@prisma/client",
+          "value": "/Users/abhishekyadav/Desktop/coinpay/node_modules/@prisma/client",
           "fromEnvVar": null
         },
         "config": {
@@ -29390,18 +29390,25 @@ var require_client = __commonJS({
           },
           {
             "fromEnvVar": null,
-            "value": "debian-openssl-3.0.x"
+            "value": "darwin"
+          },
+          {
+            "fromEnvVar": null,
+            "value": "linux-musl"
+          },
+          {
+            "fromEnvVar": null,
+            "value": "linux-arm64-openssl-3.0.x"
           }
         ],
         "previewFeatures": [],
-        "sourceFilePath": "/Users/abhishekyadav/Desktop/coinpay/packages/db/prisma/schema.prisma",
-        "isCustomOutput": true
+        "sourceFilePath": "/Users/abhishekyadav/Desktop/coinpay/packages/db/prisma/schema.prisma"
       },
       "relativeEnvPaths": {
         "rootEnvPath": null,
-        "schemaEnvPath": "../../../../../apps/bank-webhook/.env"
+        "schemaEnvPath": "../../../apps/bank-webhook/.env"
       },
-      "relativePath": "../../../prisma",
+      "relativePath": "../../../packages/db/prisma",
       "clientVersion": "6.4.1",
       "engineVersion": "a9055b89e58b4b5bfb59600785423b1db3d0e75d",
       "datasourceNames": [
@@ -29417,16 +29424,16 @@ var require_client = __commonJS({
           }
         }
       },
-      "inlineSchema": 'generator client {\n  provider      = "prisma-client-js"\n  output        = "../node_modules/@prisma/client"\n  binaryTargets = ["native", "debian-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int          @id @default(autoincrement())\n  status    OnRampStatus\n  token     String       @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  user      User         @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n',
-      "inlineSchemaHash": "cb3b6b57c75217975617b43b128f76f49c57a3cf8164b948fbcc6c1cb019776f",
+      "inlineSchema": 'generator client {\n  provider = "prisma-client-js"\n\n  binaryTargets = ["native", "darwin", "linux-musl", "linux-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int          @id @default(autoincrement())\n  status    OnRampStatus\n  token     String       @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  user      User         @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n',
+      "inlineSchemaHash": "98a33c028fdf6fca87f88a0808af143e5b3a3fc5158e1bee06644b52f1ac8610",
       "copyEngine": true
     };
     var fs2 = require("fs");
     config2.dirname = __dirname;
     if (!fs2.existsSync(path.join(__dirname, "schema.prisma"))) {
       const alternativePaths = [
-        "../../packages/db/node_modules/@prisma/client",
-        "../packages/db/node_modules/@prisma/client"
+        "../../node_modules/.prisma/client",
+        "../node_modules/.prisma/client"
       ];
       const alternativePath = alternativePaths.find((altPath) => {
         return fs2.existsSync(path.join(process.cwd(), altPath, "schema.prisma"));
@@ -29447,11 +29454,31 @@ var require_client = __commonJS({
     exports2.PrismaClient = PrismaClient2;
     Object.assign(exports2, Prisma);
     path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
-    path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/libquery_engine-darwin-arm64.dylib.node");
-    path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-    path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/libquery_engine-debian-openssl-3.0.x.so.node");
+    path.join(process.cwd(), "../../node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node");
+    path.join(__dirname, "libquery_engine-darwin.dylib.node");
+    path.join(process.cwd(), "../../node_modules/.prisma/client/libquery_engine-darwin.dylib.node");
+    path.join(__dirname, "libquery_engine-linux-musl.so.node");
+    path.join(process.cwd(), "../../node_modules/.prisma/client/libquery_engine-linux-musl.so.node");
+    path.join(__dirname, "libquery_engine-linux-arm64-openssl-3.0.x.so.node");
+    path.join(process.cwd(), "../../node_modules/.prisma/client/libquery_engine-linux-arm64-openssl-3.0.x.so.node");
     path.join(__dirname, "schema.prisma");
-    path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/schema.prisma");
+    path.join(process.cwd(), "../../node_modules/.prisma/client/schema.prisma");
+  }
+});
+
+// ../../node_modules/.prisma/client/default.js
+var require_default = __commonJS({
+  "../../node_modules/.prisma/client/default.js"(exports2, module2) {
+    module2.exports = { ...require_client() };
+  }
+});
+
+// ../../node_modules/@prisma/client/default.js
+var require_default2 = __commonJS({
+  "../../node_modules/@prisma/client/default.js"(exports2, module2) {
+    module2.exports = {
+      ...require_default()
+    };
   }
 });
 
@@ -29459,7 +29486,7 @@ var require_client = __commonJS({
 var import_express = __toESM(require_express2());
 
 // ../../packages/db/index.ts
-var import_client = __toESM(require_client());
+var import_client = __toESM(require_default2());
 var prismaClientSingleton = () => {
   return new import_client.PrismaClient();
 };
