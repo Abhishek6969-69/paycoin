@@ -20,8 +20,8 @@ const nextConfig = {
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL, // Ensure this is exposed
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    BANKSERVER_URL:process.env.BANKSERVER_URL,
-    WEBHOOK_URL:process.env.WEBHOOK_URL
+    NEXT_PUBLIC_BANKSERVER_URL:process.env.NEXT_PUBLIC_BANKSERVER_URL,
+    NEXT_PUBLIC_WEBHOOK_URL:process.env.NEXT_PUBLIC_WEBHOOK_URL
   },
 };
 

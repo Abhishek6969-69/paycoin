@@ -1,8 +1,8 @@
 import express from "express";
 import db from "@repo/db/client";
 import {z} from "zod"
+require('dotenv').config();
 const app = express();
-
 app.use(express.json()) 
 const webhookschema = z.object({
     token: z.string(),
@@ -17,6 +17,7 @@ app.post("/hdfcWebhook", async (req, res) => {
         return res.status(400).json("input given is incorrect")
     }
    
+    
     const{token,user_identifier,amount}=parsed.data
     const multipliedAmount = amount * 100;
 

@@ -50,14 +50,16 @@ export default function AddMoney() {
             type="submit"
             className="w-full md:w-auto"
             onClick={async () => {
+              console.log(process.env.NEXTAUTH_URL,"hii")
               console.log("Button clicked");
               const newToken = await Createonramptransaction({ amount, provider });
               console.log(newToken, "Token generated");
+              console.log(`${process.env.NEXTAUTH_URL}/transactions/fakebankingui?token=${newToken}`)
               setToken(newToken || "");
               
-                  
+                 
              
-
+console.log(`${process.env.NEXTAUTH_URL}/transactions/fakebankingui?token=${newToken}`)
               window.location.href = `${process.env.NEXTAUTH_URL}/transactions/fakebankingui?token=${newToken}` || "";
             }}
           >

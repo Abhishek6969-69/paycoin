@@ -2,7 +2,7 @@
 import axios from "axios"
 export const Webhookcall=async({token,amount,user_identifier}:{token:string,amount:Number,user_identifier:string})=>{
   try{
-    await axios.post(`${process.env.BANKSERVER_URL || ""}/confirm-payment`,{
+    await axios.post(`${process.env.NEXT_PUBLIC_BANKSERVER_URL || ""}/confirm-payment`,{
         token, user_identifier,amount,
  
      })

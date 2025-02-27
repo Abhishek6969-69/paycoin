@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const axios = require("axios");
+require('dotenv').config();
+const webhookUrl =process.env.WEBHOOK_URL
 
 const app = express();
 app.use(cors());
@@ -16,10 +18,13 @@ const transactions: Record<string, {
 
 app.post("/dummy", async (req:any, res:any) => {
     const { token, user_identifier, amount } = req.body;
+   
+// console.log("Calling webhook at:", webhookUrl);
+
     transactions[token] = {
         user_identifier,
         amount: Number(amount),
-        webhookUrl: process.env.WEBHOOK_URL || "",
+        webhookUrl: webhookUrl || "",
         status: "Pending"
     };
  return   res.json({ message: "Transaction created" });
@@ -30,8 +35,9 @@ app.get("/transactions", async (req:any, res:any) => {
 })
 app.post("/confirm-payment", async (req:any, res:any) => {
     const { amount, user_identifier, token } = req.body;
+    
     try {
-        await axios.post(`${process.env.WEBHOOK_URL}/hdfcWebhook` || "", {
+        await axios.post(`${webhookUrl}/hdfcWebhook` , {
             user_identifier:user_identifier.toString(),
             amount,
             token

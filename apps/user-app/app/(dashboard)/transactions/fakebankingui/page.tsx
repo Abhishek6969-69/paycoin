@@ -15,7 +15,7 @@ const FakeBankPayment = () => {
     const fetchTransaction = async () => {
       try {
         
-        const response = await axios.get(`${process.env.BANKSERVER_URL || ""}/transactions`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BANKSERVER_URL || ""}/transactions`);
         
         setTransactions(response.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const FakeBankPayment = () => {
 
   if (!transactions || !token || !transactions[token]) {
     
-    return <h1>{JSON.stringify(process.env.BANKSERVER_URL)}Invalid transaction</h1>;
+    return <h1>{JSON.stringify(process.env.NEXT_PUBLIC_BANKSERVER_URL)}Invalid transaction</h1>;
   }
 
   const { amount, user_identifier } = transactions[token];
