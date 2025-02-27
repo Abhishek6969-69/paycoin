@@ -40,14 +40,12 @@
       "static/chunks/28-e9b7ae6b75ce70f8.js",
       "static/chunks/app/user/signin/page-78cd52c02e65671f.js"
     ],
-    "/(dashboard)/transactions/fakebankingui/page": [
+    "/(dashboard)/p2ptransfer/page": [
       "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
       "static/chunks/fd9d1056-72ef1b92e01f1388.js",
       "static/chunks/117-c29abaac9f53944d.js",
       "static/chunks/main-app-b44cc0d7d21ccbc7.js",
-      "static/chunks/28-e9b7ae6b75ce70f8.js",
-      "static/chunks/965-0b99bc5e9560df0f.js",
-      "static/chunks/app/(dashboard)/transactions/fakebankingui/page-c222470edf0a7864.js"
+      "static/chunks/app/(dashboard)/p2ptransfer/page-f3e55074f333e06a.js"
     ],
     "/(dashboard)/layout": [
       "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
@@ -64,6 +62,13 @@
       "static/chunks/main-app-b44cc0d7d21ccbc7.js",
       "static/chunks/28-e9b7ae6b75ce70f8.js",
       "static/chunks/app/(dashboard)/transfer/page-5ed8a2709a5c4f9d.js"
+    ],
+    "/(dashboard)/transactions/page": [
+      "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
+      "static/chunks/fd9d1056-72ef1b92e01f1388.js",
+      "static/chunks/117-c29abaac9f53944d.js",
+      "static/chunks/main-app-b44cc0d7d21ccbc7.js",
+      "static/chunks/app/(dashboard)/transactions/page-c7f3dc789f34b16c.js"
     ],
     "/(dashboard)/dashboard/page": [
       "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
@@ -84,19 +89,14 @@
       "static/chunks/158-9486bc5b684ee683.js",
       "static/chunks/app/(dashboard)/profile/page-7d3e642d20d9da13.js"
     ],
-    "/(dashboard)/transactions/page": [
+    "/(dashboard)/transactions/fakebankingui/page": [
       "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
       "static/chunks/fd9d1056-72ef1b92e01f1388.js",
       "static/chunks/117-c29abaac9f53944d.js",
       "static/chunks/main-app-b44cc0d7d21ccbc7.js",
-      "static/chunks/app/(dashboard)/transactions/page-c7f3dc789f34b16c.js"
-    ],
-    "/(dashboard)/p2ptransfer/page": [
-      "static/chunks/webpack-ee5d0ea9bd4b5a92.js",
-      "static/chunks/fd9d1056-72ef1b92e01f1388.js",
-      "static/chunks/117-c29abaac9f53944d.js",
-      "static/chunks/main-app-b44cc0d7d21ccbc7.js",
-      "static/chunks/app/(dashboard)/p2ptransfer/page-f3e55074f333e06a.js"
+      "static/chunks/28-e9b7ae6b75ce70f8.js",
+      "static/chunks/965-0b99bc5e9560df0f.js",
+      "static/chunks/app/(dashboard)/transactions/fakebankingui/page-c222470edf0a7864.js"
     ]
   }
 }
