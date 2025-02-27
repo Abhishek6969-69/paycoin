@@ -29387,6 +29387,10 @@ var require_client = __commonJS({
             "fromEnvVar": null,
             "value": "darwin-arm64",
             "native": true
+          },
+          {
+            "fromEnvVar": null,
+            "value": "debian-openssl-3.0.x"
           }
         ],
         "previewFeatures": [],
@@ -29394,7 +29398,7 @@ var require_client = __commonJS({
         "isCustomOutput": true
       },
       "relativeEnvPaths": {
-        "rootEnvPath": "../../../.env",
+        "rootEnvPath": null,
         "schemaEnvPath": "../../../../../apps/bank-webhook/.env"
       },
       "relativePath": "../../../prisma",
@@ -29413,8 +29417,8 @@ var require_client = __commonJS({
           }
         }
       },
-      "inlineSchema": 'generator client {\n  provider = "prisma-client-js"\n  output   = "../node_modules/@prisma/client"\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int          @id @default(autoincrement())\n  status    OnRampStatus\n  token     String       @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  user      User         @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n',
-      "inlineSchemaHash": "ddd3af6796df29b6b30dce3ba46d865a2a31ab2706747c1cbd94318f2d53363c",
+      "inlineSchema": 'generator client {\n  provider      = "prisma-client-js"\n  output        = "../node_modules/@prisma/client"\n  binaryTargets = ["native", "debian-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int          @id @default(autoincrement())\n  status    OnRampStatus\n  token     String       @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  user      User         @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n',
+      "inlineSchemaHash": "cb3b6b57c75217975617b43b128f76f49c57a3cf8164b948fbcc6c1cb019776f",
       "copyEngine": true
     };
     var fs2 = require("fs");
@@ -29444,6 +29448,8 @@ var require_client = __commonJS({
     Object.assign(exports2, Prisma);
     path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
     path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/libquery_engine-darwin-arm64.dylib.node");
+    path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+    path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/libquery_engine-debian-openssl-3.0.x.so.node");
     path.join(__dirname, "schema.prisma");
     path.join(process.cwd(), "../../packages/db/node_modules/@prisma/client/schema.prisma");
   }
