@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    
     "dev": "next dev --port 3001",
     "build": "prisma generate --schema=../../packages/db/prisma/schema.prisma && next build",
     "start": "next start",
@@ -13,13 +12,16 @@
     "@prisma/client": "^6.4.1",
     "@repo/store": "*",
     "@repo/ui": "*",
+    "axios": "^1.8.1",
     "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.8",
     "cloudinary": "^2.5.1",
     "formidable": "^3.5.2",
     "next": "^14.1.1",
     "next-auth": "^4.24.7",
     "next-cloudinary": "^6.16.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
