@@ -29563,14 +29563,13 @@ var bodyParser = require_body_parser();
 var cors = require_lib3();
 var axios = require_axios();
 require_main().config();
-var webhookUrl = "http://localhost:3003";
+var webhookUrl = process.env.WEBHOOK_URL;
 var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 var transactions = {};
 app.post("/dummy", async (req, res) => {
   const { token, user_identifier, amount } = req.body;
-  console.log("Calling webhook at:", webhookUrl);
   transactions[token] = {
     user_identifier,
     amount: Number(amount),
