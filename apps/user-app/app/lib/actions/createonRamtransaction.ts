@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import prisma from "@repo/db/client";
 export default async function Createonramptransaction({amount,provider}:{amount:string,provider:string}){
-    console.log("🔍 Debug: Getting session...");
+    // console.log("🔍 Debug: Getting session...");
     const session = await getServerSession(authOptions);
 
     if (!session) {

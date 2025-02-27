@@ -31,7 +31,7 @@ app.get("/transactions", async (req:any, res:any) => {
 app.post("/confirm-payment", async (req:any, res:any) => {
     const { amount, user_identifier, token } = req.body;
     try {
-        await axios.post(process.env.WEBHOOK_URL || "", {
+        await axios.post(`${process.env.WEBHOOK_URL}/hdfcWebhook` || "", {
             user_identifier:user_identifier.toString(),
             amount,
             token

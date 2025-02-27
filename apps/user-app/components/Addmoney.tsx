@@ -54,7 +54,11 @@ export default function AddMoney() {
               const newToken = await Createonramptransaction({ amount, provider });
               console.log(newToken, "Token generated");
               setToken(newToken || "");
-              window.location.href = `http://localhost:3001/transactions/fakebankingui?token=${newToken}` || "";
+              
+                  
+             
+
+              window.location.href = `${process.env.NEXTAUTH_URL}/transactions/fakebankingui?token=${newToken}` || "";
             }}
           >
             Add Money

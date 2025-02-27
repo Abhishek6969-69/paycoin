@@ -14,6 +14,7 @@ const FakeBankPayment = () => {
   useEffect(() => {
     const fetchTransaction = async () => {
       try {
+        
         const response = await axios.get(`${process.env.BANKSERVER_URL || ""}/transactions`);
         
         setTransactions(response.data);
@@ -30,7 +31,8 @@ const FakeBankPayment = () => {
   }, []);
 
   if (!transactions || !token || !transactions[token]) {
-    return <h1>Invalid transaction</h1>;
+    
+    return <h1>{JSON.stringify(process.env.BANKSERVER_URL)}Invalid transaction</h1>;
   }
 
   const { amount, user_identifier } = transactions[token];
@@ -50,7 +52,7 @@ const FakeBankPayment = () => {
 
 await Webhookcall({token,amount,user_identifier})
 setTimeout(() => {
-    router.push("http://localhost:3001/transactions");
+    router.push(`${process.env.NEXTAUTH_URL}/transactions`);
 },3000);
 
 
