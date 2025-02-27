@@ -51,9 +51,9 @@ const FakeBankPayment = () => {
       
 
 await Webhookcall({token,amount,user_identifier})
-setTimeout(() => {
+
     router.push(`${process.env.NEXTAUTH_URL}/transactions`);
-},3000);
+
 
 
 
