@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-// import prisma from '@/lib/prisma';  // Adjust this import based on your prisma client location
-import prisma from "@repo/db/client";
+import prisma from '@/lib/prisma';  // Adjust this import based on your prisma client location
+
 export async function PUT(request: Request) {
     try {
         const session = await getServerSession();
