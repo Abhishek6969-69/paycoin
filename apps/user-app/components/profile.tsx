@@ -3,91 +3,113 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-// import { useSession } from "next-auth/react";
-// import { Image } from "next/image";
-import userdetailservercomponent from "./userdetailservercomponent";
-import { useEffect } from "react";
-// interface UserSession {
-//   user: {
-//     name: string | null;
-//     email: string;
-//     id: string;
-//     token: string;
-//     image: string;
-//   };
-// }
+import { Button } from "@repo/ui/button";
+
 interface ProfileSectionProps {
   userData: any;
   onClose: () => void;
+  onProfileUpdate: (imageUrl: string) => void;
 }
 
-export default function  Profilesection({userData, onClose}:ProfileSectionProps) {
-  const { data: session} = useSession();
+export default function ProfileSection({ userData, onClose, onProfileUpdate }: ProfileSectionProps) {
+  const { data: session } = useSession();
   const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-    setFile(selectedFile as File);
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
   };
-  const [userdata, setuserdata] = useState<any>(null);
-  useEffect(() => {
-    async function fetchUserData() {
-        try {
-            const user = await userdetailservercomponent();
-            setuserdata(user);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    }
 
-    fetchUserData();
-}, []);
   const handleUpload = async () => {
-    if (!file) return alert("Please select an image to upload!");
-
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("userId", String(session?.user?.id || ""));
-    
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
-      method: "POST",
-      body: formData,
-    });
-    
-    const result = await response.json();
-    if (response.ok) {
-      console.log("Image uploaded:", result.imageUrl);
-      alert("Image uploaded successfully!");
-    } else {
-      console.error("Upload failed:", result.error);
+    if (!file) {
+      alert("Please select an image to upload!");
+      return;
     }
-  }    
+
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("userId", String(session?.user?.id || ""));
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        onProfileUpdate(result.imageUrl);
+        alert("Image uploaded successfully!");
+        onClose();
+      } else {
+        console.error("Upload failed:", result.error);
+        alert("Upload failed: " + (result.error || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("An error occurred during upload");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
-    <div className="max-w-sm w-[400px] bg-white border border-gray-200 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">User Details</h2>
-      <div className="space-y-4">
-        <div className="flex flex-col items-center">
-         {userdata?.profileImage?(<Image
-            className=" w-[100px] h-[100px] rounded-full object-cover"
-            src={userdata?.profileImage || ""}
-            width={144}
-            height={144}
+    <div className="space-y-6 bg-[#121212] p-6 rounded-lg shadow-md border border-gray-700">
+      <div className="flex flex-col items-center">
+        {userData?.profileImage ? (
+          <Image
+            className="w-[100px] h-[100px] rounded-full object-cover border-2 border-gray-500"
+            src={userData.profileImage}
+            width={100}
+            height={100}
             alt="User Photo"
-          />):(<div className="w-[100px] h-[100px] rounded-full bg-gray-200 flex items-center justify-center">
-            <span className="text-4xl text-gray-400">👤</span>
-        </div>)} 
-          <label className="mt-2 text-blue-600 cursor-pointer hover:underline">
-            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+          />
+        ) : (
+          <div className="w-[100px] h-[100px] rounded-full bg-gray-800 flex items-center justify-center border border-gray-600">
+            <span className="text-4xl text-gray-500">👤</span>
+          </div>
+        )}
+
+        <label className="mt-4 cursor-pointer">
+          <div className="bg-gray-700 text-gray-200 hover:bg-gray-600 px-4 py-2 rounded-md text-sm font-medium transition-all">
             Choose Photo
-          </label>
-        </div>
-        <button
-          onClick={handleUpload}
-          className="mt-4 ml-24 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
+        </label>
+
+        {file && (
+          <p className="mt-2 text-sm text-gray-400">
+            Selected: {file.name}
+          </p>
+        )}
+      </div>
+
+      <div className="flex  ml-10 space-x-2">
+        <Button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-700 hover:bg-gray-600 text-gray-200 border border-gray-500"
         >
-          Upload Photo
-        </button>
+          Cancel
+        </Button>
+        <Button
+          onClick={handleUpload}
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-500 text-white border border-blue-500"
+        >
+          {isUploading ? "Uploading..." : "Upload Photo"}
+        </Button>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { authOptions } from "app/lib/auth"
 
 export default async function userdetailservercomponent() {
     const session = await getServerSession(authOptions)
-  const user1 = await prisma.user.findFirst({
+  const user1 = await prisma.user.findUnique({
     where:{
        id:Number(session?.user?.id)
     }

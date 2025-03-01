@@ -1,18 +1,44 @@
-import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server";
-import { authOptions } from "../../lib/auth";
-
-export const GET = async () => {
+import { getServerSession } from "next-auth";
+import { authOptions } from "app/lib/auth"; // Adjust the import path based on your setup
+import prisma from "@repo/db/client"; // Adjust this path to your Prisma client instance
+import db from "@repo/db/client"
+export async function GET() {
+  try {
+    // Get session
     const session = await getServerSession(authOptions);
-    if (session.user) {
-       console.log(session.user,"yehh")
-        return NextResponse.json({
-            user: session.user
-        })
+    console.log(session,"hiii")
+    if (!session || !session.user || !session.user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
-    return NextResponse.json({
-        message: "You are not logged in"
-    }, {
-        status: 403
-    })
+
+    // Fetch user from the database
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        profileImage: true, // Ensure your DB has this field
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch user data" },
+      { status: 500 }
+    );
+  }
 }

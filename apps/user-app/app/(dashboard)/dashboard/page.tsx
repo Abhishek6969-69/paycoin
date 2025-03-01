@@ -4,9 +4,7 @@ import p2ptransferserver from "../../../components/p2ptransfer";
 import dynamic from "next/dynamic";
 import "chart.js/auto";
 import { Card } from "@repo/ui/card";
-// import { getSession } from "next-auth/react";
 import { Shimmer } from "components/shimmer";
-// import Userdetailcard from "components/profile";
 import userdetailservercomponent from "components/userdetailservercomponent";
 import Image from "next/image";
 
@@ -16,62 +14,48 @@ interface UserSession {
     email: string;
     id: string;
     token: string;
-    image:string
+    image: string;
   };
 }
-
-
 
 const Line = dynamic(() => import("react-chartjs-2").then((mod) => mod.Line), {
   ssr: false,
 });
 
 const LineChart = () => {
-    
   const [transfers, setTransfers] = useState<
     { id: number; amount: number; timestamp: Date | string; fromUserId: number; toUserId: number }[]
   >([]);
-
   const [labels, setLabels] = useState<string[]>([]);
   const [data1, setData] = useState<number[]>([]);
-  const[loading,setloading]=useState<boolean>(true);
-  const [session1]=useState<UserSession>()
-  const[user,setuser]=useState<any>()
-const[sum,setsum]=useState<number>(0)
-  // Fetch transfer data
+  const [loading, setLoading] = useState<boolean>(true);
+  const [session1] = useState<UserSession>();
+  const [user, setUser] = useState<any>();
+  const [sum, setSum] = useState<number>(0);
+
   useEffect(() => {
     async function fetchTransfers() {
-        try {
-          
-            const transferData1 = await p2ptransferserver(); // Await the function
-          const{transfer}=transferData1
-          const valsess=await userdetailservercomponent()
-          setuser(valsess)
-          const transferData=transfer;
-             console.log(transfer,"p2p")
-             setloading(false)
-            // Ensure transferData is an array
-            if (!Array.isArray(transferData)) {
-                console.error("Invalid data received ❌", transferData);
-                return;
-            }
+      try {
+        const transferData1 = await p2ptransferserver();
+        const { transfer } = transferData1;
+        const userData = await userdetailservercomponent();
+        setUser(userData);
 
-            setTransfers((prev) => 
-                JSON.stringify(prev) === JSON.stringify(transferData) ? prev : transferData
-            );
-        } catch (error) {
-            console.error("Error fetching transfers ❌", error);
-            setloading(false)
+        if (!Array.isArray(transfer)) {
+          console.error("Invalid data received ❌", transfer);
+          return;
         }
-        finally{
-          setloading(false)
-        }
+
+        setTransfers((prev) => (JSON.stringify(prev) === JSON.stringify(transfer) ? prev : transfer));
+      } catch (error) {
+        console.error("Error fetching transfers ❌", error);
+      } finally {
+        setLoading(false);
+      }
     }
-
     fetchTransfers();
-}, []);
+  }, []);
 
-  // Process data when `transfers` change
   useEffect(() => {
     if (transfers.length === 0) return;
 
@@ -82,12 +66,11 @@ const[sum,setsum]=useState<number>(0)
 
     setData((prev) => {
       const newData = transfers.map((t) => t.amount / 100);
-      setsum(newData.reduce((a, b) => a + b, 0))
+      setSum(newData.reduce((a, b) => a + b, 0));
       return JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData;
     });
-  }, [transfers]); // ✅ Only runs when `transfers` change
+  }, [transfers]);
 
-  // Chart.js data configuration
   const data = {
     labels,
     datasets: [
@@ -95,58 +78,63 @@ const[sum,setsum]=useState<number>(0)
         label: "Transaction Data",
         data: data1,
         fill: false,
-        borderColor: "#FCA311",
-        backgroundColor: "rgba(252, 163, 17, 0.2)", // Light fill effect
-        pointBackgroundColor: "#E63946", // Point highlight
+        borderColor: "#00D4FF",
+        backgroundColor: "rgba(0, 212, 255, 0.2)",
+        pointBackgroundColor: "#FF0080",
         pointBorderColor: "#FFF",
         tension: 0.3,
       },
     ],
   };
-  if (loading) {
-    return <Shimmer />;
-  }
-  return (
-   <div>
-    <div className="p-3 md:p-5 flex flex-col md:flex-row gap-4">
-      <Card title="Payment Statistics" className="text-[#333333] bg-[FBFBFB] w-full md:w-[500px]">
-        <h1 className="text-xl mb-6 ml-4 md:ml-12 mt-2">General Payment</h1>
-        <h1 className="text-xl mb-6 ml-4 md:ml-12 mt-5">₹{sum}.000 Money sent from {session1?.user.name || "User"} Account</h1>
-        <div className="text-white w-full md:w-[400px]">
-          <Line data={data} />
-        </div>
-      </Card>
 
-      <Card title="User Detail" className="w-full md:w-[450px]">
-        <div>
-          <div className="flex justify-center items-center">
+  
+
+  return (
+    <div className="p-6 flex flex-col gap-6 text-white bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163] min-h-screen">
+      {/* Stats Section */}
+      <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
+        {/* Payment Statistics */}
+        <Card title="Payment Statistics" className="w-full md:w-[700px] bg-[#121829] border border-[#384260] shadow-lg p-6">
+          <h1 className="text-2xl font-bold text-white">General Payment</h1>
+          <p className="text-lg text-gray-300 mt-3">
+            ₹{sum}.000 Money sent from {session1?.user.name || "User"} Account
+          </p>
+          <div className="w-full mt-5">
+            <Line data={data} />
+          </div>
+        </Card>
+
+        {/* User Details */}
+        <Card title="User Details" className="w-full md:w-[400px] bg-[#121829] border border-[#384260] shadow-lg p-6">
+          <div className="flex flex-col items-center text-center">
             {user?.profileImage && (
-              <Image 
-                className="rounded-full w-[80px] md:w-[100px] h-[80px] md:h-[100px] object-cover" 
-                src={user.profileImage} 
-                alt="user" 
-                height={150} 
-                width={150} 
+              <Image
+                className="rounded-full w-[100px] h-[100px] object-cover"
+                src={user.profileImage}
+                alt="User"
+                height={100}
+                width={100}
               />
             )}
+            <h1 className="text-xl font-semibold mt-4">{user?.name || "User"}</h1>
+            <p className="text-gray-400">Phone: {user?.number || "0000000000"}</p>
           </div>
-          <div className="mt-6">
-            <div className="text-lg md:text-2xl flex flex-col md:flex-row justify-between">
-              <h1><span className="font-bold">Name:</span> {user?.name || "User"}</h1>
-            </div>
-            <div className="mt-3 text-lg md:text-2xl flex flex-col md:flex-row justify-between">
-              <h1><span className="font-bold">Phone:</span> {user?.number || "0000000000"}</h1>
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
-    <div>
-    
-    </div>
-    </div>
-    
+        </Card>
+      </div>
 
+      {/* Join Community Card */}
+      <div className="flex justify-center">
+        <Card title="Join Community" className="w-full md:w-[800px] bg-gradient-to-r from-[#1C1F3A] to-[#2D2163] border border-[#384260] shadow-lg p-6 text-center">
+          <h2 className="text-2xl font-bold text-white">🚀 Join Our Community!</h2>
+          <p className="text-gray-300 mt-2">
+            Stay updated with the latest news, exclusive content, and discussions with other users.
+          </p>
+          <button className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:scale-105 transition-transform">
+            Join Now
+          </button>
+        </Card>
+      </div>
+    </div>
   );
 };
 

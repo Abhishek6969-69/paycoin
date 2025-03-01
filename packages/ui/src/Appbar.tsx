@@ -14,20 +14,20 @@ export const Appbar = ({
     onSignin,
     onSignout
 }: AppbarProps) => {
-    return <div className="flex justify-between border-b px-4 py-3">
+    return <div className="flex justify-between  px-4 py-3 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
         <div className="text-lg flex flex-col justify-center">
             <div className=" flex justify-center  gap-2">
-            <div>
+            {/* <div>
             <Logo />
-            </div>
-            <div className=" flex justify-center items-center">
+            </div> */}
+            <div className=" flex justify-center items-center ml-12">
             CoinPay
             </div>
            
             </div>
         </div>
-        <div className="flex flex-col justify-center  items-center pt-2">
-            <Button type="submit" className="" onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
+        <div className="flex flex-col justify-center  items-center pt-2 ">
+            <Button type="submit" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300" onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
         </div>
     </div>
 }

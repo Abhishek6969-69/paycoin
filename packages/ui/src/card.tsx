@@ -11,7 +11,11 @@ export function Card({
 }): JSX.Element {
   return (
     <div
-      className={`border p-4 rounded bg-white mx-4 ${className}`}
+      className={` p-4 rounded bg-gradient-to-br from-[#20263D] via-[#2A3152] to-[#383F6B]
+ text-white
+
+
+ mx-4 ${className}`}
     >
       <h1 className="text-xl border-b   pb-2">
         {title}

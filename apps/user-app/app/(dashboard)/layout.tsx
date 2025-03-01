@@ -1,4 +1,5 @@
 "use client";
+import { Toaster } from 'sonner';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Appbar } from "@repo/ui/appbar";
 import Sidebaritem from "../../components/sidebaritem";
@@ -9,44 +10,55 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="relative w-screen h-screen  md:bg-white text-black flex flex-col">
+    <div className=" text-white relative w-screen h-screen  flex flex-col  bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
+      {/* Appbar */}
       <Appbar onSignin={signIn} onSignout={signOut} user={session.data?.user} />
-      
-      <div className="flex  flex-1">
-        {/* Sidebar */}
-        <div
-          className={`fixed z-20 top-0 left-0 h-full  p-4 transition-transform duration-300 md:static md:translate-x-0 
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-        >
-          <div className="flex justify-end mb-4 md:hidden">
-            <button onClick={() => setSidebarOpen(false)} className="text-white">
-              ✕ Close
-            </button>
-          </div>
-          
-          <Sidebaritem href="/dashboard" icon={<HomeIcon />} title="Home" />
-          <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transaction" />
-          <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer" />
-          <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
-          <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" />
-        </div>
 
-        {/* Content Area */}
-        <div className="flex-1 p-4 bg-white overflow-y-auto">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="mb-4 bg-blue-500 text-white px-4 py-2 rounded md:hidden"
-          >
-            ☰ Open Sidebar
-          </button>
-          <div>
-          {children}
-          </div>
-        </div>
+      {/* Hamburger Menu Button (Always Visible) */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="absolute top-4 left-4 z-30  text-white p-2 rounded"
+      >
+        <Hamburger />
+      </button>
+
+      {/* Sidebar (Hidden by Default, Opens on Click) */}
+      <div
+        className={`fixed z-20 top-0 left-0 h-full w-64 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]  text-white shadow-lg p-4 transition-transform duration-300 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Close Button */}
+        <button onClick={() => setSidebarOpen(false)} className=" mb-4 ml-48 mt-3">
+          <Close /> 
+        </button>
+
+        {/* Sidebar Items */}
+        <Sidebaritem href="/Home" icon={<HomeIcon />} title="Home" />
+        <Sidebaritem href="/dashboard" icon={<HomeIcon />} title="Dashboard" />
+        <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transaction" />
+        <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer" />
+        <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
+        <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" />
       </div>
+
+      {/* Content Area */}
+      <div className="flex-1 p-4  overflow-y-auto bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">{children}
+        <Toaster />
+      </div>
+
+      {/* Background Overlay (Closes Sidebar on Click) */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-10"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 }
+
+
 
 function HomeIcon() {
   return (
@@ -55,7 +67,22 @@ function HomeIcon() {
     </svg>
   );
 }
+function Hamburger() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+    </svg>
+  );
+}
 
+function Close() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
 function TransferIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
