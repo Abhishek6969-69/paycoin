@@ -1,5 +1,8 @@
+import { useSession } from "next-auth/react";
 import { Button } from "./button";
-
+import { Session } from "inspector/promises";
+// import { useRouter } from "next/router";
+import { useEffect } from "react";
 interface AppbarProps {
     user?: {
         name?: string | null;
@@ -14,6 +17,24 @@ export const Appbar = ({
     onSignin,
     onSignout
 }: AppbarProps) => {
+    const session=useSession();
+    // const router=useRouter();
+    
+        // if (session.status === "loading") return; 
+    //     if (!session.data?.user) {
+    //       router.push("/user/signin"); // Redirect to sign-in if not authenticated
+    //     }
+    //   }, [session]);
+    
+      // Handle loading state
+      if (session.status === "loading") {
+        return <div className="bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]"></div>;
+      }
+    
+      // If user is not authenticated, don't render the layout (redirect will handle it)
+    //   if (!session.data?.user) {
+    //     return null;
+    //   }
     return <div className="flex justify-between  px-4 py-3 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
         <div className="text-lg flex flex-col justify-center">
             <div className=" flex justify-center  gap-2">

@@ -4,7 +4,7 @@ export default function Input({placeholder,onChange,type,className}:{placeholder
   return (
     <div className=' '>
        
-        <input className={`border  px-4 py-2 text-black rounded   ${className}`} type={type}  placeholder={placeholder} onChange={(e)=>onChange(e.target.value)} />
+        <input className={`border  px-4 py-2  rounded   ${className}`} type={type}  placeholder={placeholder} onChange={(e)=>onChange(e.target.value)} />
     </div>
   )
 }

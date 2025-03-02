@@ -63,7 +63,7 @@ export const authOptions = {
     secret: process.env.JWT_SECRET || "secret",
     callbacks: {
         async jwt({ token, user }:{token:any,user:any}) {
-            console.log("JWT user data:", user); // Debugging
+            // console.log("JWT user data:", user); // Debugging
             // When the user is returned from authorize, attach the name to the token
             if (user) {
               token.name = user.name || token.name;
@@ -73,7 +73,7 @@ export const authOptions = {
           },
         // TODO: can u fix the type here? Using any is bad
         async session({ token, session }: any) {
-            console.log(session,"sss")
+            // console.log(session,"sss")
             session.user.id = token.sub
             session.user.token=token.jti
             session.user.name=token.name || session.user.name;  

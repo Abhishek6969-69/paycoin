@@ -5,7 +5,7 @@ import Input from '@repo/ui/input';
 import { Button } from '@repo/ui/button';
 import P2PTransfermoney from '../../lib/actions/p2ptransfer';
 import { Label } from '@repo/ui/label';
-import Loading from 'components/loading';
+
 import { toast } from 'sonner';
 function P2PTransfer() {
   const [to, setto] = useState('');

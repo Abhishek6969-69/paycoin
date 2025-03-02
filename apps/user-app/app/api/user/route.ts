@@ -7,7 +7,7 @@ export async function GET() {
   try {
     // Get session
     const session = await getServerSession(authOptions);
-    console.log(session,"hiii")
+    // console.log(session,"hiii")
     if (!session || !session.user || !session.user.id) {
       return NextResponse.json(
         { error: "Unauthorized" },

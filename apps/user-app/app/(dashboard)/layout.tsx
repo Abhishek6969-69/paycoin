@@ -1,36 +1,57 @@
 "use client";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Appbar } from "@repo/ui/appbar";
 import Sidebaritem from "../../components/sidebaritem";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Shimmer } from "components/shimmer";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
 
+  // Redirect unauthenticated users to the sign-in page
+  useEffect(() => {
+    if (session.status === "loading") return; // Wait until session is loaded
+    if (!session.data?.user) {
+      router.push("/user/signin"); // Redirect to sign-in if not authenticated
+    }
+  }, [session, router]);
+
+  // Handle loading state
+  if (session.status === "loading") {
+    return <div className="bg-gradient-to-br from-[#0A0F1D] mt-[-40px] via-[#1C1F3A] to-[#2D2163]"><Shimmer/></div>;
+  }
+
+  // If user is not authenticated, don't render the layout (redirect will handle it)
+  if (!session.data?.user) {
+    return null;
+  }
+
+  // Render the dashboard layout for authenticated users
   return (
-    <div className=" text-white relative w-screen h-screen  flex flex-col  bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
+    <div className="text-white relative w-screen h-screen flex flex-col bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
       {/* Appbar */}
-      <Appbar onSignin={signIn} onSignout={signOut} user={session.data?.user} />
+      <Appbar onSignin={signIn} onSignout={signOut} user={session.data.user} />
 
       {/* Hamburger Menu Button (Always Visible) */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="absolute top-4 left-4 z-30  text-white p-2 rounded"
+        className="absolute top-4 left-4 z-30 text-white p-2 rounded"
       >
         <Hamburger />
       </button>
 
       {/* Sidebar (Hidden by Default, Opens on Click) */}
       <div
-        className={`fixed z-20 top-0 left-0 h-full w-64 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]  text-white shadow-lg p-4 transition-transform duration-300 transform ${
+        className={`fixed z-20 top-0 left-0 h-full w-64 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163] text-white shadow-lg p-4 transition-transform duration-300 transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Close Button */}
-        <button onClick={() => setSidebarOpen(false)} className=" mb-4 ml-48 mt-3">
-          <Close /> 
+        <button onClick={() => setSidebarOpen(false)} className="mb-4 ml-48 mt-3">
+          <Close />
         </button>
 
         {/* Sidebar Items */}
@@ -43,7 +64,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 p-4  overflow-y-auto bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">{children}
+      <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
+        {children}
         <Toaster />
       </div>
 
@@ -58,8 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 }
 
-
-
+// Your existing icon components remain unchanged
 function HomeIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -67,6 +88,7 @@ function HomeIcon() {
     </svg>
   );
 }
+
 function Hamburger() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -83,6 +105,7 @@ function Close() {
     </svg>
   );
 }
+
 function TransferIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -106,11 +129,11 @@ function P2PTransfer() {
     </svg>
   );
 }
+
 function ProfileIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-  </svg>
-  
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    </svg>
   );
 }

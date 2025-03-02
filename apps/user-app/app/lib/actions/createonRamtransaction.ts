@@ -28,7 +28,7 @@ export default async function Createonramptransaction({amount,provider}:{amount:
     });
 
     // Send a request to the dummy endpoint
-    console.log(process.env.NEXT_PUBLIC_BANKSERVER_URL,"hiiii")
+    // console.log(process.env.NEXT_PUBLIC_BANKSERVER_URL,"hiiii")
     await axios.post(`${process.env.NEXT_PUBLIC_BANKSERVER_URL || ""}/dummy`, {
 
         token: token1,
