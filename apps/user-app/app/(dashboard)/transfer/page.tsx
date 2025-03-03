@@ -25,7 +25,7 @@ export default function Transfer() {
                     transfer.map(t => ({
                         ...t,
                         timestamp: new Date(t.timestamp) // Convert to Date object
-                    }))
+                    })).sort((a,b)=>(b.timestamp.getTime())-(a.timestamp.getTime())).slice(0,15)
                 );
                 
             } catch (error) {
@@ -35,7 +35,7 @@ export default function Transfer() {
 
         fetchTransfers();
     }, []);
-
+   
     return (
         <div className="flex mt-10 justify-center items-center px-4 sm:px-6 lg:px-8 w-full max-w-4xl mx-auto">
             <Card 

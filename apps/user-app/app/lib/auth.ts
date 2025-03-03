@@ -8,7 +8,7 @@ export const authOptions = {
           name: 'Credentials',
           credentials: {
             name:{label:"Name", type:"text",placeholder:"your name", required:true},
-            phone: { label: "Phone number", type: "text", placeholder: "1231231231", required: true },
+            phone: { label: "Phone number", type: "tel", maxlength:"10",  placeholder: "1231231231", required: true },
             password: { label: "Password", type: "password", required: true }
           },
           // TODO: User credentials type from next-aut
@@ -24,7 +24,7 @@ export const authOptions = {
             if (existingUser) {
                 const passwordValidation = await bcrypt.compare(credentials.password, existingUser.password);
                 if (passwordValidation) {
-                    console.log(existingUser.name)
+                    // console.log(existingUser.name)
                     return {
                         
                         id: existingUser.id.toString(),
@@ -63,8 +63,7 @@ export const authOptions = {
     secret: process.env.JWT_SECRET || "secret",
     callbacks: {
         async jwt({ token, user }:{token:any,user:any}) {
-            // console.log("JWT user data:", user); // Debugging
-            // When the user is returned from authorize, attach the name to the token
+           
             if (user) {
               token.name = user.name || token.name;
               token.email=user.email || token.email
@@ -81,10 +80,10 @@ export const authOptions = {
             try{
                 await db.balance.upsert({
                     where: { userId: Number(session.user.id) },
-                    update: {},  // Do nothing if balance exists
+                    update: {}, 
                     create: { 
                         userId: Number(session.user.id), 
-                        amount:Number((Math.random() * 1000000)), 
+                        amount:0, 
                         locked: 0,
                     }
                 });

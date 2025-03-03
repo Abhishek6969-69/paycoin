@@ -65,6 +65,7 @@ export default function SignUpPage() {
                             className="w-full bg-gray-800/50 border-gray-700 focus:border-blue-400 focus:ring-blue-400/20 rounded-lg p-3"
                             placeholder="Enter your phone number"
                             type="tel"
+                            maxlength={10}
                             onChange={(value) => setData({ ...data, phone: value })}
                         />
                     </div>

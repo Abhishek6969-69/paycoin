@@ -65,15 +65,15 @@ export default async function() {
     const transactions = await getOnRampTransactions();
 
     return <div className="w-[100%] h-screen text-[#333333] bg-[FBFBFB]">
-        <div className="text-4xl text-[#E0E1DD] pt-8 mb-8 font-bold">
+        <div className="text-4xl text-[#E0E1DD] pt-8 ml-16 mb-8 font-bold">
             Transfer
            
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-            <div>
+            <div className=" mt-[-100px]">
                 <Addmoney />
             </div>
-            <div>
+            <div className=" mt-[-38px]">
                 
                      <BalanceCard amount={balance?.amount || 0} locked={balance?.locked || 0} />
                      <div className="pt-4">

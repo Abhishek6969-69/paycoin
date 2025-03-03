@@ -84,11 +84,11 @@ export default function ProfilePage() {
             
             <Card title="User Profile" className="w-full md:w-[600px] mx-auto mt-8 p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="space-y-8">
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center ">
                         {userData?.profileImage ? (
-                            <div className="relative group">
+                            <div className="relative group mt-4">
                                 <Image 
-                                    className="rounded-full w-[200px] h-[200px] border-4 border-primary/20 hover:border-primary/60 transition-all duration-300 shadow-lg"
+                                    className="rounded-full w-[200px] h-[200px] border-4  border-primary/20 hover:border-primary/60 transition-all duration-300 shadow-lg"
                                     src={userData.profileImage} 
                                     alt="User profile" 
                                     width={200} 

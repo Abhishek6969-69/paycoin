@@ -11,31 +11,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
 
-  // Redirect unauthenticated users to the sign-in page
+  
   useEffect(() => {
-    if (session.status === "loading") return; // Wait until session is loaded
+    if (session.status === "loading") return; 
     if (!session.data?.user) {
-      router.push("/user/signin"); // Redirect to sign-in if not authenticated
+      router.push("/user/signin");
     }
   }, [session, router]);
 
-  // Handle loading state
+
   if (session.status === "loading") {
     return <div className="bg-gradient-to-br from-[#0A0F1D] mt-[-40px] via-[#1C1F3A] to-[#2D2163]"><Shimmer/></div>;
   }
 
-  // If user is not authenticated, don't render the layout (redirect will handle it)
+  
   if (!session.data?.user) {
     return null;
   }
 
-  // Render the dashboard layout for authenticated users
+
   return (
     <div className="text-white relative w-screen h-screen flex flex-col bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
-      {/* Appbar */}
+      
       <Appbar onSignin={signIn} onSignout={signOut} user={session.data.user} />
 
-      {/* Hamburger Menu Button (Always Visible) */}
+    
       <button
         onClick={() => setSidebarOpen(true)}
         className="absolute top-4 left-4 z-30 text-white p-2 rounded"
@@ -43,20 +43,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Hamburger />
       </button>
 
-      {/* Sidebar (Hidden by Default, Opens on Click) */}
+     
       <div
         className={`fixed z-20 top-0 left-0 h-full w-64 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163] text-white shadow-lg p-4 transition-transform duration-300 transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Close Button */}
+        
         <button onClick={() => setSidebarOpen(false)} className="mb-4 ml-48 mt-3">
           <Close />
         </button>
 
         {/* Sidebar Items */}
         <Sidebaritem href="/Home" icon={<HomeIcon />} title="Home" />
-        <Sidebaritem href="/dashboard" icon={<HomeIcon />} title="Dashboard" />
+        <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" />
         <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transaction" />
         <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer" />
         <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
@@ -88,7 +88,14 @@ function HomeIcon() {
     </svg>
   );
 }
+function Dashboard(){
+  return(
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75 16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+</svg>
 
+  )
+}
 function Hamburger() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">

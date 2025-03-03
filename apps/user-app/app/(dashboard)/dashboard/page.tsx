@@ -4,7 +4,7 @@ import p2ptransferserver from "../../../components/p2ptransfer";
 import dynamic from "next/dynamic";
 import "chart.js/auto";
 import { Card } from "@repo/ui/card";
-import { Shimmer } from "components/shimmer";
+
 import userdetailservercomponent from "components/userdetailservercomponent";
 import Image from "next/image";
 
@@ -106,7 +106,7 @@ const LineChart = () => {
 
         {/* User Details */}
         <Card title="User Details" className="w-full md:w-[400px] bg-[#121829] border border-[#384260] shadow-lg p-6">
-          <div className="flex flex-col items-center text-center">
+          <div className="flex flex-col items-center mt-4 text-center">
             {user?.profileImage && (
               <Image
                 className="rounded-full w-[100px] h-[100px] object-cover"

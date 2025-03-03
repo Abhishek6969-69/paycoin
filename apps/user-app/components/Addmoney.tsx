@@ -12,6 +12,7 @@ export default function AddMoney() {
   const SUPPORTED_BANKS = [
     { name: "HDFC", redirecturl: "https://netbanking.hdfcbank.com/netbanking/" },
     { name: "KOTAK", redirecturl: "https://netbanking.kotak.com/knb2/" },
+    {name:"State Bank of India",redirecturl:"https://netbanking.kotak.com/knb2/"}
   ];
 
   const [redirecturl, setRedirecturl] = useState(SUPPORTED_BANKS[0]?.redirecturl);
@@ -21,6 +22,11 @@ export default function AddMoney() {
 const handelclick=async()=>{
   if(!amount || !provider){
     toast.error("Please fill in all fields!");
+    return;
+  }
+  const parsedamount=Number(amount)
+  if(!amount || isNaN(parsedamount) || parsedamount<=0 ){
+    toast.error("Please fill in valid  positive value!");
     return;
   }
   const loadingtoast=toast.loading("Processing your request...");
