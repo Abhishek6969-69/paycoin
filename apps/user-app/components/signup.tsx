@@ -86,6 +86,16 @@ export default function SignUpPage() {
                     >
                         {loading ? "Signing up..." : "Sign Up"}
                     </Button>
+                    {/* <Button 
+                        type="submit" 
+                        className=" py-4 text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-400 hover:to-blue-600 rounded-lg shadow-md hover:shadow-blue-500/20 transition-all duration-300" 
+                        onClick={(e)=>{
+                            setData({...data,phone:"9696694046",password:"123456"})
+                        }}
+                        
+                    >
+                        Test
+                    </Button> */}
                 </form>
 
                 <div className="text-center text-sm text-gray-400 mt-4">

@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (session.status === "loading") return; 
     if (!session.data?.user) {
-      router.push("/user/signin");
+      router.push("/Landingpage");
     }
   }, [session, router]);
 
@@ -55,7 +55,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </button>
 
         {/* Sidebar Items */}
-        <Sidebaritem href="/Home" icon={<HomeIcon />} title="Home" />
+        {/* <Sidebaritem href="/Home" icon={<HomeIcon />} title="Home" /> */}
         <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" />
         <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transaction" />
         <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer" />

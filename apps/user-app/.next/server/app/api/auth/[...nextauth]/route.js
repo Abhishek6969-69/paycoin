@@ -23,7 +23,7 @@ module.exports = require("@prisma/client");
 
 /***/ }),
 
-/***/ "./action-async-storage.external":
+/***/ "../../client/components/action-async-storage.external":
 /*!*******************************************************************************!*\
   !*** external "next/dist/client/components/action-async-storage.external.js" ***!
   \*******************************************************************************/
@@ -33,7 +33,7 @@ module.exports = require("next/dist/client/components/action-async-storage.exter
 
 /***/ }),
 
-/***/ "./request-async-storage.external":
+/***/ "../../client/components/request-async-storage.external":
 /*!********************************************************************************!*\
   !*** external "next/dist/client/components/request-async-storage.external.js" ***!
   \********************************************************************************/
@@ -43,7 +43,7 @@ module.exports = require("next/dist/client/components/request-async-storage.exte
 
 /***/ }),
 
-/***/ "./static-generation-async-storage.external":
+/***/ "../../client/components/static-generation-async-storage.external":
 /*!******************************************************************************************!*\
   !*** external "next/dist/client/components/static-generation-async-storage.external.js" ***!
   \******************************************************************************************/

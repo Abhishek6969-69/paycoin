@@ -1,7 +1,38 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Signin from "app/user/signin/page";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 const Hero = () => {
+  const router=useRouter()
+  async function handaletrynow(){
+    const loadingToastId = toast.loading("Signing in as Test User");
+    try{
+        const res = await signIn('credentials', {
+            phone: '9696694046',
+            password: '123456',
+            redirect: false
+        })
+
+        toast.dismiss(loadingToastId);
+
+
+        if (res?.error) {
+            toast.error(res.error);
+        } else {
+            toast.success("Signed in Test User");
+            router.push('/dashboard');
+        }
+    } catch (err) {
+        console.log("Signup error ", err);
+        toast.dismiss(loadingToastId);
+        toast.error("An error occurred during signin. Please try again");
+    }
+
+
+}
   return (
     <section className="relative flex flex-col items-center justify-center text-center text-white min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
       {/* Background Overlay */}
@@ -37,8 +68,8 @@ const Hero = () => {
         <button className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300">
         <Link href={"/user/signup"} >  Get Started</Link>
         </button>
-        <button className="px-8 py-3 bg-transparent border-2 border-gray-300 text-white font-semibold rounded-full hover:bg-gray-800 hover:border-gray-800 transition-all duration-300">
-        <Link href={"/user/signup"} > Sign Up</Link>
+        <button className="px-8 py-3 bg-transparent border-2 border-gray-300 text-white font-semibold rounded-full hover:bg-gray-800 hover:border-gray-800 transition-all duration-300" onClick={handaletrynow}>
+         Try Now
         </button>
       </motion.div>
 

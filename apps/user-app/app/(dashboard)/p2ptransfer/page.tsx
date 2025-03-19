@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@repo/ui/card";
 import Input from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import P2PTransfermoney from "../../lib/actions/p2ptransfer";
 import { Label } from "@repo/ui/label";
 import { toast } from "sonner";
-
+import Option from "@repo/ui/option";
+import Option2 from "components/Option2";
+import { Findalluser } from "components/findalluser";
 interface TransferResponse {
   success: boolean;
   message: string;
@@ -15,7 +17,14 @@ interface TransferResponse {
 function P2PTransfer() {
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
-
+  const [ans,setans]=useState<any>([]);
+useEffect(()=>{
+ async function helper(){
+const value=await Findalluser();
+setans(value);
+ }
+ helper()
+},[])
   const handleTransfer = async () => {
     if (!to || to.length !== 10 || !/^\d{10}$/.test(to)) {
       toast.error("Please enter a valid 10-digit phone number!");
@@ -53,14 +62,13 @@ function P2PTransfer() {
       >
         <div className="p-6 space-y-6">
           <div className="space-y-2">
+           
             <Label label="Recipient Number" className="text-sm font-medium text-gray-300" />
-            <Input
-              maxlength={10}
-              type="tel"
-              placeholder="Enter mobile number"
-              className="w-full bg-gray-800/50 border-gray-700 focus:border-yellow-400 focus:ring focus:ring-yellow-400/20 rounded-lg transition-all"
-              onChange={(value) => setTo(value)}
-            />
+            <Option2 onselect={(value:any)=>{setTo(value)}} 
+                options={ans.map((x:any) => ({ key: x.number, value: x.number }))}
+                className="w-full  bg-gray-800/50 border-gray-700 focus:border-yellow-400 focus:ring focus:ring-yellow-400/20 rounded-lg transition-all"
+             />
+            {/* {JSON.stringify(ans)} */}
           </div>
           <div className="space-y-2">
             <Label label="Amount" className="text-sm font-medium text-gray-300" />
