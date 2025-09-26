@@ -30,12 +30,12 @@ export async function POST(req: NextRequest) {
     const form = await req.formData();
     token = String(form.get("token") ?? "");
     const url = createRedirectUrl("declined", token);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, { status: 302 });
   } catch (err) {
     console.error("decline handler error:", err);
     try {
       const url = createRedirectUrl("declined", token);
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(url, { status: 302 });
     } catch (urlError) {
       console.error("❌ Critical error: Cannot create decline redirect URL:", urlError);
       // Fallback to a simple response if URL creation fails

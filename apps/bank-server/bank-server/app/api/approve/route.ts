@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     if (!token || !amount || !user_identifier) {
       console.error("Missing required fields:", { token, amount, user_identifier });
       const url = createRedirectUrl("failed", token, "missing_fields");
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(url, { status: 302 });
     }
 
     const payload = { token, amount, user_identifier };
@@ -66,17 +66,17 @@ export async function POST(req: NextRequest) {
         url: `${WEBHOOK_URL}/hdfcWebhook`
       });
       const url = createRedirectUrl("failed", token, "webhook_failed");
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(url, { status: 302 });
     }
 
     // success
     const url = createRedirectUrl("success", token);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, { status: 302 });
   } catch (err) {
     console.error("approve handler error:", err);
     try {
       const url = createRedirectUrl("failed", token, "server_error");
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(url, { status: 302 });
     } catch (urlError) {
       console.error("❌ Critical error: Cannot create redirect URL:", urlError);
       // Fallback to a simple response if URL creation fails

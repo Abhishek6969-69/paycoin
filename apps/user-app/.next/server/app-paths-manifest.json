@@ -1,23 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/Landingpage/page": "app/Landingpage/page.js",
-  "/api/upload/route": "app/api/upload/route.js",
-  "/api/bank/balance/route": "app/api/bank/balance/route.js",
-  "/api/user/route": "app/api/user/route.js",
-  "/api/user/update/route": "app/api/user/update/route.js",
-  "/api/user/balance/route": "app/api/user/balance/route.js",
-  "/api/withdraw/create/route": "app/api/withdraw/create/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
-  "/user/signin/page": "app/user/signin/page.js",
-  "/user/signup/page": "app/user/signup/page.js",
-  "/wallet/page": "app/wallet/page.js",
-  "/(dashboard)/transactions/fakebankingui/page": "app/(dashboard)/transactions/fakebankingui/page.js",
-  "/(dashboard)/profile/page": "app/(dashboard)/profile/page.js",
-  "/(dashboard)/p2ptransfer/page": "app/(dashboard)/p2ptransfer/page.js",
-  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
-  "/(dashboard)/withdraw/page": "app/(dashboard)/withdraw/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(dashboard)/transfer/page": "app/(dashboard)/transfer/page.js"
+  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js"
 }
