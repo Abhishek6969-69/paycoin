@@ -14,21 +14,7 @@ export const OnRampTransactions = ({
 }) => {
   const [updatedTransactions, setUpdatedTransactions] = useState(transactions);
 
-  // Function to get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Success":
-        return "text-green-400";
-      case "Pending":
-        return "text-yellow-400";
-      case "Failed":
-        return "text-red-400";
-      case "Processing":
-        return "text-blue-400";
-      default:
-        return "text-gray-400";
-    }
-  };
+
 
  
   useEffect(() => {
@@ -55,9 +41,15 @@ export const OnRampTransactions = ({
 
   if (!sortedTransactions.length) {
     return (
-      <Card title="Recent Transactions">
-        <div className="text-center pb-8 pt-8 text-gray-300 ">
-          No Recent Transactions
+      <Card title="Recent Transactions" className="border border-gray-200 bg-white shadow-sm">
+        <div className="p-12 text-center">
+          <div className="text-gray-400 mb-2">
+            <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <p className="text-gray-500 text-sm">No transactions yet</p>
+          <p className="text-gray-400 text-xs mt-1">Your transactions will appear here</p>
         </div>
       </Card>
     );
@@ -66,44 +58,44 @@ export const OnRampTransactions = ({
   return (
     <Card
       title="Recent Transactions"
-      className="border p-4 rounded mx-4 h-[43vh] overflow-hidden"
+      className="border border-gray-200 bg-white shadow-sm h-[400px] overflow-hidden"
     >
-      <div className="pt-2 max-h-[300px] overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
-        {sortedTransactions.map((t, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center border-b border-gray-700 pb-2 last:border-none"
-          >
-            <div>
-              <div className="text-sm font-medium text-gray-200">
-                Received INR
-              </div>
-              <div className="text-gray-400 text-xs">
-                {new Date(t.time).toDateString()}
-              </div>
-            </div>
+      <div className="p-6">
+        <div className="max-h-[300px] overflow-y-auto space-y-4">
+          {sortedTransactions.map((t, index) => (
             <div
-              className={`${
-                t.status === "Processing" ? "mr-6" : " "
-              } flex items-center justify-center `}
+              key={index}
+              className="flex justify-between items-center p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-200"
             >
-              <div>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-gray-900">
+                  Received INR
+                </div>
+                <div className="text-gray-500 text-xs mt-1">
+                  {new Date(t.time).toDateString()}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
                 <span
-                  className={`px-2 py-0.5 text-sm rounded ${getStatusColor(
-                    t.status
-                  )}`}
+                  className={`px-3 py-1 text-xs font-medium rounded-full ${
+                    t.status === "Success" 
+                      ? "bg-green-100 text-green-800"
+                      : t.status === "Processing" 
+                      ? "bg-yellow-100 text-yellow-800"
+                      : t.status === "Failed"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
                 >
                   {t.status}
                 </span>
+                <span className="text-green-600 font-semibold">
+                  + ₹{(t.amount / 100).toFixed(2)}
+                </span>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-green-400 font-semibold">
-                + Rs {t.amount / 100}
-              </span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Card>
   );

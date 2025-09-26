@@ -1,5 +1,4 @@
 "use server"
-import axios from "axios"
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import prisma from "@repo/db/client";
@@ -23,18 +22,18 @@ export default async function Createonramptransaction({amount,provider}:{amount:
             startTime: new Date(),
             token: token1,
             provider,
-            status: "Processing"
+            status: "Processing",
+            type: "DEPOSIT"
         }
     });
 
-    // Send a request to the dummy endpoint
-    // console.log(process.env.NEXT_PUBLIC_BANKSERVER_URL,"hiiii")
-    await axios.post(`${process.env.NEXT_PUBLIC_BANKSERVER_URL || ""}/dummy`, {
-
+    // Create redirect URL for bank payment simulation
+    const paise = Number(amount) * 100; // Convert to paise
+    const bankServerUrl = process.env.NEXT_PUBLIC_BANKSERVER_URL || 'http://localhost:3004';
+    const redirectUrl = `${bankServerUrl}/start-payment?token=${token1}&amount=${paise}&user_identifier=${userid}`;
+    
+    return {
         token: token1,
-        user_identifier: userid,
-        amount: amount
-    });
-
-    return token1;
+        redirectUrl: redirectUrl
+    };
 }

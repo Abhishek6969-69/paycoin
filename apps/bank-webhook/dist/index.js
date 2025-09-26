@@ -19851,14 +19851,14 @@ var require_etag = __commonJS({
   "../../node_modules/etag/index.js"(exports2, module2) {
     "use strict";
     module2.exports = etag;
-    var crypto2 = require("crypto");
+    var crypto3 = require("crypto");
     var Stats = require("fs").Stats;
     var toString = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash = crypto2.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash = crypto3.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash + '"';
     }
@@ -22750,11 +22750,11 @@ var require_request = __commonJS({
 // ../../node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
   "../../node_modules/cookie-signature/index.js"(exports2) {
-    var crypto2 = require("crypto");
+    var crypto3 = require("crypto");
     exports2.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
-      return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto3.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports2.unsign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Signed cookie string must be provided.");
@@ -22763,7 +22763,7 @@ var require_cookie_signature = __commonJS({
       return sha1(mac) == sha1(val) ? str : false;
     };
     function sha1(str) {
-      return crypto2.createHash("sha1").update(str).digest("hex");
+      return crypto3.createHash("sha1").update(str).digest("hex");
     }
   }
 });
@@ -29325,7 +29325,8 @@ var require_client = __commonJS({
       provider: "provider",
       amount: "amount",
       startTime: "startTime",
-      userId: "userId"
+      userId: "userId",
+      type: "type"
     };
     exports2.Prisma.P2pTransferScalarFieldEnum = {
       id: "id",
@@ -29339,6 +29340,11 @@ var require_client = __commonJS({
       userId: "userId",
       amount: "amount",
       locked: "locked"
+    };
+    exports2.Prisma.BankBalanceScalarFieldEnum = {
+      id: "id",
+      totalAmount: "totalAmount",
+      updatedAt: "updatedAt"
     };
     exports2.Prisma.SortOrder = {
       asc: "asc",
@@ -29361,12 +29367,17 @@ var require_client = __commonJS({
       Failure: "Failure",
       Processing: "Processing"
     };
+    exports2.TransactionType = exports2.$Enums.TransactionType = {
+      DEPOSIT: "DEPOSIT",
+      WITHDRAW: "WITHDRAW"
+    };
     exports2.Prisma.ModelName = {
       User: "User",
       Merchant: "Merchant",
       OnRampTransaction: "OnRampTransaction",
       p2pTransfer: "p2pTransfer",
-      Balance: "Balance"
+      Balance: "Balance",
+      BankBalance: "BankBalance"
     };
     var config2 = {
       "generator": {
@@ -29424,8 +29435,8 @@ var require_client = __commonJS({
           }
         }
       },
-      "inlineSchema": 'generator client {\n  provider = "prisma-client-js"\n\n  binaryTargets = ["native", "darwin", "linux-musl", "linux-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int          @id @default(autoincrement())\n  status    OnRampStatus\n  token     String       @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  user      User         @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n',
-      "inlineSchemaHash": "98a33c028fdf6fca87f88a0808af143e5b3a3fc5158e1bee06644b52f1ac8610",
+      "inlineSchema": 'generator client {\n  provider = "prisma-client-js"\n\n  binaryTargets = ["native", "darwin", "linux-musl", "linux-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider  = "postgresql"\n  url       = env("DATABASE_URL")\n  directUrl = env("DATABASE_URL_UNPOOLED")\n}\n\nmodel User {\n  id                Int                 @id @default(autoincrement())\n  email             String?             @unique\n  name              String?\n  number            String              @unique\n  password          String\n  profileImage      String?\n  OnRampTransaction OnRampTransaction[]\n  Balance           Balance[]\n  sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")\n  receivedTransfers p2pTransfer[]       @relation(name: "ToUserRelation")\n}\n\nmodel Merchant {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  auth_type AuthType\n}\n\nmodel OnRampTransaction {\n  id        Int             @id @default(autoincrement())\n  status    OnRampStatus\n  token     String          @unique\n  provider  String\n  amount    Int\n  startTime DateTime\n  userId    Int\n  type      TransactionType @default(DEPOSIT)\n  user      User            @relation(fields: [userId], references: [id])\n}\n\nmodel p2pTransfer {\n  id         Int      @id @default(autoincrement())\n  amount     Int\n  timestamp  DateTime\n  fromUserId Int\n  fromUser   User     @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])\n  toUserId   Int\n  toUser     User     @relation(name: "ToUserRelation", fields: [toUserId], references: [id])\n}\n\nmodel Balance {\n  id     Int  @id @default(autoincrement())\n  userId Int  @unique\n  amount Int\n  locked Int\n  user   User @relation(fields: [userId], references: [id])\n}\n\nmodel BankBalance {\n  id          Int      @id @default(autoincrement())\n  totalAmount BigInt   @default(10000000000) // 100 crores in paisa (100,00,00,000 * 100)\n  updatedAt   DateTime @updatedAt\n}\n\nenum AuthType {\n  Google\n  Github\n}\n\nenum OnRampStatus {\n  Success\n  Failure\n  Processing\n}\n\nenum TransactionType {\n  DEPOSIT\n  WITHDRAW\n}\n',
+      "inlineSchemaHash": "cd542fea8f6e4ec8cbfd0cab08d35f676d5b40661b561407ba6aab248fccb1dd",
       "copyEngine": true
     };
     var fs2 = require("fs");
@@ -29441,7 +29452,7 @@ var require_client = __commonJS({
       config2.dirname = path.join(process.cwd(), alternativePath);
       config2.isBundled = true;
     }
-    config2.runtimeDataModel = JSON.parse('{"models":{"User":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"email","kind":"scalar","isList":false,"isRequired":false,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"name","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"number","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"password","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"profileImage","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"OnRampTransaction","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"OnRampTransaction","nativeType":null,"relationName":"OnRampTransactionToUser","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"Balance","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Balance","nativeType":null,"relationName":"BalanceToUser","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"sentTransfers","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"p2pTransfer","nativeType":null,"relationName":"FromUserRelation","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"receivedTransfers","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"p2pTransfer","nativeType":null,"relationName":"ToUserRelation","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"Merchant":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"email","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"name","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"auth_type","kind":"enum","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"AuthType","nativeType":null,"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"OnRampTransaction":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"status","kind":"enum","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"OnRampStatus","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"token","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"provider","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"startTime","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"DateTime","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"userId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"user","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"OnRampTransactionToUser","relationFromFields":["userId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"p2pTransfer":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"timestamp","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"DateTime","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"fromUserId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"fromUser","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"FromUserRelation","relationFromFields":["fromUserId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false},{"name":"toUserId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"toUser","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"ToUserRelation","relationFromFields":["toUserId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"Balance":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"userId","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"locked","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"user","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"BalanceToUser","relationFromFields":["userId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false}},"enums":{"AuthType":{"values":[{"name":"Google","dbName":null},{"name":"Github","dbName":null}],"dbName":null},"OnRampStatus":{"values":[{"name":"Success","dbName":null},{"name":"Failure","dbName":null},{"name":"Processing","dbName":null}],"dbName":null}},"types":{}}');
+    config2.runtimeDataModel = JSON.parse('{"models":{"User":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"email","kind":"scalar","isList":false,"isRequired":false,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"name","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"number","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"password","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"profileImage","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"OnRampTransaction","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"OnRampTransaction","nativeType":null,"relationName":"OnRampTransactionToUser","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"Balance","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Balance","nativeType":null,"relationName":"BalanceToUser","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"sentTransfers","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"p2pTransfer","nativeType":null,"relationName":"FromUserRelation","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false},{"name":"receivedTransfers","kind":"object","isList":true,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"p2pTransfer","nativeType":null,"relationName":"ToUserRelation","relationFromFields":[],"relationToFields":[],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"Merchant":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"email","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"name","kind":"scalar","isList":false,"isRequired":false,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"auth_type","kind":"enum","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"AuthType","nativeType":null,"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"OnRampTransaction":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"status","kind":"enum","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"OnRampStatus","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"token","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"provider","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"String","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"startTime","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"DateTime","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"userId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"type","kind":"enum","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":true,"type":"TransactionType","nativeType":null,"default":"DEPOSIT","isGenerated":false,"isUpdatedAt":false},{"name":"user","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"OnRampTransactionToUser","relationFromFields":["userId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"p2pTransfer":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"timestamp","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"DateTime","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"fromUserId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"fromUser","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"FromUserRelation","relationFromFields":["fromUserId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false},{"name":"toUserId","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"toUser","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"ToUserRelation","relationFromFields":["toUserId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"Balance":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"userId","kind":"scalar","isList":false,"isRequired":true,"isUnique":true,"isId":false,"isReadOnly":true,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"amount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"locked","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"Int","nativeType":null,"isGenerated":false,"isUpdatedAt":false},{"name":"user","kind":"object","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"User","nativeType":null,"relationName":"BalanceToUser","relationFromFields":["userId"],"relationToFields":["id"],"isGenerated":false,"isUpdatedAt":false}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false},"BankBalance":{"dbName":null,"schema":null,"fields":[{"name":"id","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":true,"isReadOnly":false,"hasDefaultValue":true,"type":"Int","nativeType":null,"default":{"name":"autoincrement","args":[]},"isGenerated":false,"isUpdatedAt":false},{"name":"totalAmount","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":true,"type":"BigInt","nativeType":null,"default":"10000000000","isGenerated":false,"isUpdatedAt":false},{"name":"updatedAt","kind":"scalar","isList":false,"isRequired":true,"isUnique":false,"isId":false,"isReadOnly":false,"hasDefaultValue":false,"type":"DateTime","nativeType":null,"isGenerated":false,"isUpdatedAt":true}],"primaryKey":null,"uniqueFields":[],"uniqueIndexes":[],"isGenerated":false}},"enums":{"AuthType":{"values":[{"name":"Google","dbName":null},{"name":"Github","dbName":null}],"dbName":null},"OnRampStatus":{"values":[{"name":"Success","dbName":null},{"name":"Failure","dbName":null},{"name":"Processing","dbName":null}],"dbName":null},"TransactionType":{"values":[{"name":"DEPOSIT","dbName":null},{"name":"WITHDRAW","dbName":null}],"dbName":null}},"types":{}}');
     defineDmmfProperty2(exports2.Prisma, config2.runtimeDataModel);
     config2.engineWasm = void 0;
     config2.compilerWasm = void 0;
@@ -29555,7 +29566,7 @@ var require_main = __commonJS({
     var fs2 = require("fs");
     var path = require("path");
     var os2 = require("os");
-    var crypto2 = require("crypto");
+    var crypto3 = require("crypto");
     var packageJson = require_package();
     var version = packageJson.version;
     var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
@@ -29751,7 +29762,7 @@ var require_main = __commonJS({
       const authTag = ciphertext.subarray(-16);
       ciphertext = ciphertext.subarray(12, -16);
       try {
-        const aesgcm = crypto2.createDecipheriv("aes-256-gcm", key, nonce);
+        const aesgcm = crypto3.createDecipheriv("aes-256-gcm", key, nonce);
         aesgcm.setAuthTag(authTag);
         return `${aesgcm.update(ciphertext)}${aesgcm.final()}`;
       } catch (error) {
@@ -33889,6 +33900,7 @@ var z = /* @__PURE__ */ Object.freeze({
 });
 
 // src/index.ts
+var import_crypto = __toESM(require("crypto"));
 require_main().config();
 var app = (0, import_express.default)();
 app.use(import_express.default.json());
@@ -33898,14 +33910,33 @@ var webhookschema = z.object({
   amount: z.number()
 });
 app.post("/hdfcWebhook", async (req, res) => {
+  console.log("Webhook received:", {
+    body: req.body,
+    headers: {
+      "x-hdfc-signature": req.headers["x-hdfc-signature"],
+      "content-type": req.headers["content-type"]
+    }
+  });
+  const receivedSignature = req.headers["x-hdfc-signature"];
+  const webhookSecret = process.env.WEBHOOK_SECRET || "dev_secret";
+  if (receivedSignature) {
+    const expectedSignature = import_crypto.default.createHmac("sha256", webhookSecret).update(JSON.stringify(req.body)).digest("hex");
+    if (receivedSignature !== expectedSignature) {
+      console.error("Invalid webhook signature");
+      return res.status(401).json({ error: "Invalid signature" });
+    }
+  }
   const parsed = webhookschema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json("input given is incorrect");
+    console.error("Invalid webhook payload:", parsed.error);
+    return res.status(400).json({
+      error: "Invalid input",
+      details: parsed.error.issues
+    });
   }
   const { token, user_identifier, amount } = parsed.data;
-  const multipliedAmount = amount * 100;
   if (!token) {
-    return res.status(400).json("token is required");
+    return res.status(400).json({ error: "Token is required" });
   }
   const onramptrans = await db_default.onRampTransaction.findFirst({
     where: {
@@ -33918,42 +33949,86 @@ app.post("/hdfcWebhook", async (req, res) => {
   const paymentInformation = {
     token,
     userId: user_identifier.toString(),
-    amount: multipliedAmount
+    amount
   };
   try {
-    await db_default.$transaction([
-      db_default.balance.updateMany({
-        where: {
-          userId: Number(paymentInformation.userId)
-        },
+    const transactionType = onramptrans?.type || "DEPOSIT";
+    await db_default.$transaction(async (tx) => {
+      const bankBalance = await tx.bankBalance.upsert({
+        where: { id: 1 },
+        update: {},
+        create: {
+          id: 1,
+          totalAmount: BigInt(1e10)
+          // ₹100 crores in paisa
+        }
+      });
+      if (transactionType === "WITHDRAW") {
+        if (bankBalance.totalAmount < BigInt(paymentInformation.amount)) {
+          console.error(`Bank insufficient funds: Requested ${paymentInformation.amount} paisa, Available ${bankBalance.totalAmount} paisa`);
+          throw new Error("Withdrawal service temporarily unavailable. Please try again later.");
+        }
+      }
+      const userBalance = await tx.balance.upsert({
+        where: { userId: Number(paymentInformation.userId) },
+        update: {},
+        create: {
+          userId: Number(paymentInformation.userId),
+          amount: 0,
+          locked: 0
+        }
+      });
+      if (transactionType === "WITHDRAW") {
+        if (userBalance.amount < Number(paymentInformation.amount)) {
+          throw new Error("Insufficient user funds for withdrawal");
+        }
+      }
+      await tx.balance.update({
+        where: { userId: Number(paymentInformation.userId) },
         data: {
           amount: {
-            // You can also get this from your DB
-            increment: Number(paymentInformation.amount)
+            [transactionType === "WITHDRAW" ? "decrement" : "increment"]: Number(paymentInformation.amount)
           }
         }
-      }),
-      db_default.onRampTransaction.updateMany({
-        where: {
-          token: paymentInformation.token
-        },
+      });
+      const updatedBankBalance = await tx.bankBalance.update({
+        where: { id: 1 },
         data: {
-          status: "Success"
+          totalAmount: {
+            [transactionType === "WITHDRAW" ? "decrement" : "increment"]: BigInt(paymentInformation.amount)
+          }
         }
-      })
-    ]);
+      });
+      await tx.onRampTransaction.updateMany({
+        where: { token: paymentInformation.token },
+        data: { status: "Success" }
+      });
+      const balanceInRupees = Number(updatedBankBalance.totalAmount) / 100;
+      console.log(`[BANK] ${transactionType}: \u20B9${paymentInformation.amount / 100} | Bank Balance: \u20B9${balanceInRupees.toLocaleString("en-IN")} | User: ${paymentInformation.userId}`);
+    }, {
+      timeout: 1e4
+      // Increase timeout to 10 seconds
+    });
+    console.log(`Payment processed successfully: ${token} - \u20B9${amount / 100} for user ${user_identifier}`);
     res.json({
-      message: "Captured"
+      success: true,
+      message: "Payment captured successfully",
+      token,
+      amount
     });
   } catch (e) {
-    console.error(e);
-    res.status(411).json({
-      message: "Error while processing webhook"
+    console.error("Webhook processing error:", e);
+    res.status(500).json({
+      success: false,
+      error: "Error while processing webhook",
+      message: e instanceof Error ? e.message : "Unknown error"
     });
   } finally {
-    async () => {
+    try {
       await db_default.$disconnect();
-    };
+    } catch (disconnectError) {
+      console.error("Error disconnecting from database:", disconnectError);
+    }
   }
 });
 app.listen(process.env.PORT || 3003);

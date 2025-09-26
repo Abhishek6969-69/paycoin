@@ -10,16 +10,12 @@ export function Card({
   className?: string;
 }): JSX.Element {
   return (
-    <div
-      className={` p-4 rounded bg-gradient-to-br from-[#20263D] via-[#2A3152] to-[#383F6B]
- text-white
-
-
- mx-4 ${className}`}
-    >
-      <h1 className="text-xl border-b   pb-2">
-        {title}
-      </h1>
+    <div className={`rounded-lg bg-white text-gray-900 ${className}`}>
+      <div className="px-6 py-4 border-b border-gray-200">
+        <h1 className="text-lg font-semibold text-gray-900">
+          {title}
+        </h1>
+      </div>
       <div>{children}</div>
     </div>
   );

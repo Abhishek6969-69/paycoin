@@ -31,14 +31,15 @@ model Merchant {
 }
 
 model OnRampTransaction {
-  id        Int          @id @default(autoincrement())
+  id        Int               @id @default(autoincrement())
   status    OnRampStatus
-  token     String       @unique
+  token     String            @unique
   provider  String
   amount    Int
   startTime DateTime
   userId    Int
-  user      User         @relation(fields: [userId], references: [id])
+  type      TransactionType   @default(DEPOSIT)
+  user      User              @relation(fields: [userId], references: [id])
 }
 
 model p2pTransfer {
@@ -59,6 +60,11 @@ model Balance {
   user   User @relation(fields: [userId], references: [id])
 }
 
+model BankBalance {
+  id          Int      @id @default(autoincrement())
+  totalAmount BigInt   @default(10000000000) // 100 crores in paisa (100,00,00,000 * 100)
+  updatedAt   DateTime @updatedAt
+}
 
 enum AuthType {
   Google
@@ -69,4 +75,9 @@ enum OnRampStatus {
   Success
   Failure
   Processing
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
 }

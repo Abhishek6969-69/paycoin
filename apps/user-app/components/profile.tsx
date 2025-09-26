@@ -60,24 +60,24 @@ export default function ProfileSection({ userData, onClose, onProfileUpdate }: P
   };
 
   return (
-    <div className="space-y-6 bg-[#121212] p-6 rounded-lg shadow-md border border-gray-700">
+    <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
       <div className="flex flex-col items-center">
         {userData?.profileImage ? (
           <Image
-            className="w-[100px] h-[100px] rounded-full object-cover border-2 border-gray-500"
+            className="w-[100px] h-[100px] rounded-full object-cover border-2 border-gray-300"
             src={userData.profileImage}
             width={100}
             height={100}
             alt="User Photo"
           />
         ) : (
-          <div className="w-[100px] h-[100px] rounded-full bg-gray-800 flex items-center justify-center border border-gray-600">
-            <span className="text-4xl text-gray-500">👤</span>
+          <div className="w-[100px] h-[100px] rounded-full bg-gray-100 flex items-center justify-center border border-gray-300">
+            <span className="text-4xl text-gray-400">👤</span>
           </div>
         )}
 
         <label className="mt-4 cursor-pointer">
-          <div className="bg-gray-700 text-gray-200 hover:bg-gray-600 px-4 py-2 rounded-md text-sm font-medium transition-all">
+          <div className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-md text-sm font-medium transition-all border border-gray-300">
             Choose Photo
           </div>
           <input
@@ -89,24 +89,23 @@ export default function ProfileSection({ userData, onClose, onProfileUpdate }: P
         </label>
 
         {file && (
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-gray-600">
             Selected: {file.name}
           </p>
         )}
       </div>
 
-      <div className="flex  ml-10 space-x-2">
+      <div className="flex justify-center space-x-3">
         <Button
-          type="button"
+          variant="secondary"
           onClick={onClose}
-          className="bg-gray-700 hover:bg-gray-600 text-gray-200 border border-gray-500"
         >
           Cancel
         </Button>
         <Button
+          variant="primary"
           onClick={handleUpload}
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-500 text-white border border-blue-500"
+          disabled={isUploading}
         >
           {isUploading ? "Uploading..." : "Upload Photo"}
         </Button>

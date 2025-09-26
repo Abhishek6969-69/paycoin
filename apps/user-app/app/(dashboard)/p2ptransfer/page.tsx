@@ -55,45 +55,83 @@ setans(value);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh] px-4 md:px-0 mb-36">
-      <Card
-        title="Send Money"
-        className="w-full md:w-[500px] shadow-xl bg-gradient-to-br from-gray-900 to-[#1C1F3A] border border-gray-700"
-      >
-        <div className="p-6 space-y-6">
-          <div className="space-y-2">
-           
-            <Label label="Recipient Number" className="text-sm font-medium text-gray-300" />
-            <Option2 onselect={(value:any)=>{setTo(value)}} 
-                options={ans.map((x:any) => ({ key: x.number, value: x.number }))}
-                className="w-full  bg-gray-800/50 border-gray-700 focus:border-yellow-400 focus:ring focus:ring-yellow-400/20 rounded-lg transition-all"
-             />
-            {/* {JSON.stringify(ans)} */}
-          </div>
-          <div className="space-y-2">
-            <Label label="Amount" className="text-sm font-medium text-gray-300" />
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-              <Input
-                placeholder="Enter amount"
-                type="number"
-                className="w-full pl-8 bg-gray-800/50 border-gray-700 focus:border-yellow-400 focus:ring focus:ring-yellow-400/20 rounded-lg transition-all"
-                onChange={(value) => setAmount(value)}
-              />
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-2xl mx-auto space-y-8">
+        {/* Enhanced Header Section */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl mx-auto mb-6 flex items-center justify-center border border-blue-200">
+              <span className="text-3xl">💸</span>
             </div>
-          </div>
-          <Button
-            type="submit"
-            className="w-full py-4 text-lg font-medium bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-300 hover:to-orange-400 rounded-lg shadow-lg hover:shadow-yellow-500/20 transition-all duration-300"
-            onClick={handleTransfer}
-          >
-            Send Money
-          </Button>
-          <div className="text-center text-xs text-gray-400 mt-4">
-            <p>Secure, instant transfers to any CoinPay user</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">Send Money</h1>
+            <p className="text-lg text-gray-600">Transfer money to any CoinPay user instantly and securely</p>
           </div>
         </div>
-      </Card>
+        
+        <Card
+          title=""
+          className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden"
+        >
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
+            <h2 className="text-2xl font-bold text-white mb-2">P2P Transfer</h2>
+            <p className="text-blue-100">Send money instantly to friends and family</p>
+          </div>
+          <div className="p-8 space-y-8">
+            <div className="space-y-4">
+              <Label label="Recipient Phone Number" className="text-base font-semibold text-gray-800" />
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <Option2 onselect={(value:any)=>{setTo(value)}} 
+                    options={ans.map((x:any) => ({ key: x.number, value: x.number }))}
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-xl transition-all text-base font-medium"
+                 />
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <Label label="Transfer Amount" className="text-base font-semibold text-gray-800" />
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">₹</span>
+                <Input
+                  placeholder="0.00"
+                  type="number"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-xl transition-all text-lg font-semibold"
+                  onChange={(value) => setAmount(value)}
+                />
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                onClick={handleTransfer}
+              >
+                Send Money Instantly
+              </Button>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+              <div className="flex items-center gap-3 text-blue-800">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">Bank-Grade Security</p>
+                  <p className="text-xs text-blue-600">End-to-end encrypted instant transfers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

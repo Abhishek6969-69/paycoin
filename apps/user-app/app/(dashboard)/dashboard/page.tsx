@@ -80,9 +80,9 @@ const router=useRouter()
         label: "Transaction Data",
         data: data1,
         fill: false,
-        borderColor: "#00D4FF",
-        backgroundColor: "rgba(0, 212, 255, 0.2)",
-        pointBackgroundColor: "#FF0080",
+        borderColor: "#3B82F6",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        pointBackgroundColor: "#3B82F6",
         pointBorderColor: "#FFF",
         tension: 0.3,
       },
@@ -92,72 +92,200 @@ const router=useRouter()
   
 
   return (
-    <div className="p-6 flex flex-col gap-6 text-white bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163] min-h-screen">
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[1000px] mx-auto">
-  {/* Payment Statistics */}
-  <Card title="Payment Statistics" className="bg-[#121829] border border-[#384260] shadow-lg p-6 h-full flex flex-col justify-between">
-    <h1 className="text-2xl font-bold text-white">General Payment</h1>
-    <p className="text-lg text-gray-300 mt-3">
-      ₹{sum}.000 Money sent from {session1?.user.name || "User"} Account
-    </p>
-    <div className="w-full mt-5 flex-1">
-      <Line data={data} />
-    </div>
-  </Card>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-8 space-y-8">
+        
+        {/* Header Section - Enhanced Professional Design */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-3">Dashboard</h1>
+              <p className="text-lg text-gray-600">Welcome back! Here's your comprehensive financial overview.</p>
+            </div>
+            <div className="hidden md:flex items-center gap-6">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 mb-1">Last updated</p>
+                <p className="text-base font-semibold text-gray-900">{new Date().toLocaleDateString()}</p>
+              </div>
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center border border-blue-200">
+                <span className="text-2xl">📊</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  {/* User Details */}
-  <Card 
-  title="User Details" 
-  className="relative bg-[#121829] border border-[#384260] shadow-xl p-6 h-full flex flex-col items-center text-center rounded-2xl overflow-hidden transition-transform hover:scale-105 hover:shadow-2xl"
->
-  {/* Subtle Gradient Glow Background */}
-  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl opacity-20 pointer-events-none"></div>
+        {/* Main Chart Section - Full Width */}
+        <div className="w-full">
+          <Card title="" className="bg-white border border-gray-200 shadow-sm">
+            <div className="p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Statistics</h2>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
+                    <p className="text-sm text-blue-600 font-medium">Total Transactions</p>
+                    <p className="text-2xl font-bold text-blue-900">₹{sum.toFixed(2)}</p>
+                  </div>
+                  <div className="bg-green-50 px-4 py-2 rounded-lg border border-green-100">
+                    <p className="text-sm text-green-600 font-medium">Transaction Count</p>
+                    <p className="text-2xl font-bold text-green-900">{transfers.length}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Large Chart Container */}
+              <div className="w-full" style={{ height: '400px' }}>
+                <Line 
+                  data={data} 
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: 'top' as const,
+                        labels: {
+                          usePointStyle: true,
+                          padding: 20,
+                          font: {
+                            size: 14
+                          }
+                        }
+                      },
+                      title: {
+                        display: true,
+                        text: 'Transaction History Over Time',
+                        font: {
+                          size: 16,
+                          weight: 'bold'
+                        }
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        grid: {
+                          color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                        ticks: {
+                          font: {
+                            size: 12
+                          }
+                        }
+                      },
+                      x: {
+                        grid: {
+                          color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                        ticks: {
+                          font: {
+                            size: 12
+                          }
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
 
+        {/* Secondary Cards Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* User Profile Card */}
+          <Card title="" className="bg-white border border-gray-200 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">User Profile</h3>
+              
+              <div className="flex flex-col items-center text-center space-y-4">
+                {/* Profile Image */}
+                <div className="relative">
+                  {user?.profileImage ? (
+                    <div className="w-24 h-24 rounded-full bg-blue-100 p-1 ring-2 ring-blue-200">
+                      <Image
+                        className="rounded-full w-full h-full object-cover"
+                        src={user.profileImage}
+                        alt="User Profile"
+                        height={96}
+                        width={96}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center ring-2 ring-gray-200">
+                      <span className="text-3xl text-gray-400">👤</span>
+                    </div>
+                  )}
+                </div>
 
-  {/* Profile Image Wrapper */}
-  {user?.profileImage && (
-    <div className="relative ml-4 mt-4 w-[120px] h-[120px] rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 p-[4px]">
-      <Image
-        className="rounded-full w-full h-full object-cover border-4 border-[#1C1F3A] shadow-lg"
-        src={user.profileImage}
-        alt="User"
-        height={120}
-        width={120}
-      />
-    </div>
-  )}
+                {/* User Details */}
+                <div className="space-y-2">
+                  <h4 className="text-lg font-semibold text-gray-900">
+                    {user?.name || "Abhishek Yadav"}
+                  </h4>
+                  <div className="flex items-center justify-center gap-2 text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    <span className="text-sm">{user?.number || "0000000000"}</span>
+                  </div>
+                </div>
 
-  {/* User Name */}
-  <h1 className="text-xl font-bold text-white mt-5 tracking-wide">{user?.name || "Abhishek Yadav"}</h1>
+                {/* Action Button */}
+                <Button 
+                  variant="primary" 
+                  onClick={() => router.push('/profile')}
+                  className="w-full mt-4"
+                >
+                  View Full Profile
+                </Button>
+              </div>
+            </div>
+          </Card>
 
-  {/* Phone Number */}
-  <p className="text-gray-400 mt-2 px-4 py-2 bg-[#1C1F3A] rounded-lg shadow-md">
-    📞 {user?.number || "0000000000"}
-  </p>
+          {/* Community & Actions Card */}
+          <Card title="" className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-blue-900 mb-4">Join Our Community</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 text-sm">📢</span>
+                  </div>
+                  <div>
+                    <p className="text-blue-800 font-medium text-sm">Latest Updates</p>
+                    <p className="text-blue-700 text-sm">Stay informed about new features and improvements</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 text-sm">💬</span>
+                  </div>
+                  <div>
+                    <p className="text-blue-800 font-medium text-sm">Community Support</p>
+                    <p className="text-blue-700 text-sm">Connect with other users and get help</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 text-sm">🎯</span>
+                  </div>
+                  <div>
+                    <p className="text-blue-800 font-medium text-sm">Exclusive Content</p>
+                    <p className="text-blue-700 text-sm">Access premium features and content</p>
+                  </div>
+                </div>
+              </div>
 
-  {/* View Profile Button */}
-  <Button type="submit" className="mt-4 px-6 py-3 hover:cursor-pointer text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md transition-transform hover:scale-110"  onClick={() => router.push('/profile')}>
-    View Profile
-  </Button>
-</Card>
-
-
-</div>
-
-{/* Join Community Card */}
-<div className="flex justify-center w-full max-w-[1000px] mx-auto mt-6">
-  <Card title="Join Community" className="bg-gradient-to-r from-[#1C1F3A] to-[#2D2163] border border-[#384260] shadow-lg p-6 text-center h-full">
-    <h2 className="text-2xl font-bold text-white">🚀 Join Our Community!</h2>
-    <p className="text-gray-300 mt-2">
-      Stay updated with the latest news, exclusive content, and discussions with other users.
-    </p>
-    <button className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:scale-105 transition-transform">
-      Join Now
-    </button>
-  </Card>
-</div>
-
+              <Button variant="primary" className="w-full mt-6">
+                Join Community
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

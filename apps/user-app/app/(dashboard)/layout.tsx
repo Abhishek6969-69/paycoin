@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
   if (session.status === "loading") {
-    return <div className="bg-gradient-to-br from-[#0A0F1D] mt-[-40px] via-[#1C1F3A] to-[#2D2163]"><Shimmer/></div>;
+    return <div className="bg-gray-50 min-h-screen"><Shimmer/></div>;
   }
 
   
@@ -31,51 +31,86 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
   return (
-    <div className="text-white relative w-screen h-screen flex flex-col bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
-      
-      <Appbar onSignin={signIn} onSignout={signOut} user={session.data.user} />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Top Navigation Bar */}
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
+        <Appbar onSignin={signIn} onSignout={signOut} user={session.data.user} />
+      </div>
 
-    
-      <button
-        onClick={() => setSidebarOpen(true)}
-        className="absolute top-4 left-4 z-30 text-white p-2 rounded"
-      >
-        <Hamburger />
-      </button>
-
-     
-      <div
-        className={`fixed z-20 top-0 left-0 h-full w-64 bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163] text-white shadow-lg p-4 transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        
-        <button onClick={() => setSidebarOpen(false)} className="mb-4 ml-48 mt-3">
-          <Close />
+      <div className="flex flex-1">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="fixed top-20 left-4 z-30 lg:hidden bg-white text-gray-700 hover:text-gray-900 p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-200"
+        >
+          <Hamburger />
         </button>
 
-        {/* Sidebar Items */}
-        {/* <Sidebaritem href="/Home" icon={<HomeIcon />} title="Home" /> */}
-        <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" />
-        <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transaction" />
-        <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer" />
-        <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
-        <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" />
-      </div>
-
-      {/* Content Area */}
-      <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-[#0A0F1D] via-[#1C1F3A] to-[#2D2163]">
-        {children}
-        <Toaster />
-      </div>
-
-      {/* Background Overlay (Closes Sidebar on Click) */}
-      {sidebarOpen && (
+        {/* Sidebar */}
         <div
-          className="fixed inset-0 bg-black opacity-50 z-10"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+          className={`fixed lg:sticky lg:top-0 z-20 h-screen w-72 bg-white border-r border-gray-200 shadow-lg lg:shadow-none transition-transform duration-300 transform ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">C</span>
+              </div>
+              <span className="font-semibold text-gray-900">CoinPay</span>
+            </div>
+            <button 
+              onClick={() => setSidebarOpen(false)} 
+              className="lg:hidden text-gray-400 hover:text-gray-600 p-1 rounded transition-colors duration-200"
+            >
+              <Close />
+            </button>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className="flex-1 px-4 py-6 space-y-2">
+            <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" />
+            <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transactions" />
+            <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer History" />
+            <Sidebaritem href="/withdraw" icon={<WithdrawIcon />} title="Cash Out" />
+            <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
+            <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" />
+          </nav>
+
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-gray-100">
+            <div className="text-xs text-gray-500 text-center">
+              <p>© 2025 CoinPay</p>
+              <p>Version 2.0</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <main className="flex-1 lg:ml-0">
+          <div className="h-full overflow-y-auto">
+            <div className="min-h-full">
+              {children}
+            </div>
+          </div>
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'bg-white border border-gray-200 text-gray-900',
+              duration: 4000,
+            }}
+          />
+        </main>
+
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-25 z-10 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -125,6 +160,14 @@ function TransactionsIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+  );
+}
+
+function WithdrawIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
     </svg>
   );
 }

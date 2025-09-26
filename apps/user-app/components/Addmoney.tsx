@@ -31,12 +31,13 @@ const handelclick=async()=>{
   }
   const loadingtoast=toast.loading("Processing your request...");
   try{
-    const newToken = await Createonramptransaction({ amount, provider });
-    if(newToken){
-      
-      setToken(newToken || "");
-                window.location.href = `${process.env.NEXTAUTH_URL}/transactions/fakebankingui?token=${newToken}` || "";
-                toast.dismiss(loadingtoast);
+    const result = await Createonramptransaction({ amount, provider });
+    if(result && result.token){
+      setToken(result.token);
+      toast.dismiss(loadingtoast);
+      toast.success("Redirecting to bank server for payment approval...");
+      // Use the redirectUrl from the result instead
+      window.location.href = result.redirectUrl;
     }
   }
   catch(e){
@@ -47,43 +48,43 @@ const handelclick=async()=>{
   
 }
   return (
-    <div className="flex justify-center items-center min-h-[70vh] px-4 md:px-0 mb-36">
-      <Card title="Add Money" className="w-full md:w-[500px] shadow-xl bg-gradient-to-br from-gray-900 to-[#1C1F3A] border border-gray-700">
-        <div className="p-6 space-y-6">
-          <div className="space-y-2">
-            <Label label="Amount" className="text-sm font-medium text-gray-300" />
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-              <Input 
-                placeholder="Enter amount" 
-                type="number" 
-                className="w-full pl-8 bg-gray-800/50 border-gray-700 focus:border-yellow-400 focus:ring focus:ring-yellow-400/20 rounded-lg transition-all" 
-                onChange={(value) => setAmount(value)}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label label="Select Bank" className="text-sm font-medium text-gray-300" />
-            <Option
-              onselect={(value) => {
-                const selectedBank = SUPPORTED_BANKS.find((x) => x.name === value);
-                setRedirecturl(selectedBank?.redirecturl || "");
-                setProvider(selectedBank?.name || "");
-              }}
-              options={SUPPORTED_BANKS.map((x) => ({ key: x.name, value: x.name }))}
+    <Card title="Add Money" className="w-full shadow-sm bg-white border border-gray-200">
+      <div className="p-6 space-y-6">
+        <div className="space-y-2">
+          <Label label="Amount" className="text-sm font-medium text-gray-700" />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+            <Input 
+              placeholder="Enter amount" 
+              type="number" 
+              className="w-full pl-8 bg-white border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500/20 rounded-lg transition-all" 
+              onChange={(value) => setAmount(value)}
             />
           </div>
-
-          <Button 
-            type="submit" 
-            className="w-full py-4 text-lg font-medium bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-300 hover:to-orange-400 rounded-lg shadow-lg hover:shadow-yellow-500/20 transition-all duration-300" 
-            onClick={handelclick}
-          >
-            Add Money
-          </Button>
         </div>
-      </Card>
-    </div>
+
+        <div className="space-y-2">
+          <Label label="Select Bank" className="text-sm font-medium text-gray-700" />
+          <Option
+            onselect={(value) => {
+              const selectedBank = SUPPORTED_BANKS.find((x) => x.name === value);
+              setRedirecturl(selectedBank?.redirecturl || "");
+              setProvider(selectedBank?.name || "");
+            }}
+            options={SUPPORTED_BANKS.map((x) => ({ key: x.name, value: x.name }))}
+          />
+        </div>
+
+        <Button 
+          type="submit" 
+          variant="primary"
+          size="lg"
+          className="w-full" 
+          onClick={handelclick}
+        >
+          Add Money
+        </Button>
+      </div>
+    </Card>
   );
 }
