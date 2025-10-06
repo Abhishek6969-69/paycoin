@@ -1,7 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import Signin from "app/user/signin/page";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -9,13 +7,12 @@ const Hero = () => {
   const router=useRouter()
   async function handaletrynow(){
     const loadingToastId = toast.loading("Signing in as Test User");
-  try{
-    const res = await signIn('credentials', {
-      phone: '9696694046',
-      // seeded password is 123456789
-      password: '123456789',
-      redirect: false
-    })
+    try{
+        const res = await signIn('credentials', {
+            phone: '9696694046',
+            password: '123456789',
+            redirect: false
+        })
 
         toast.dismiss(loadingToastId);
 
@@ -27,13 +24,27 @@ const Hero = () => {
             router.push('/dashboard');
         }
     } catch (err) {
-        console.log("Signup error ", err);
+    // Error during signin
         toast.dismiss(loadingToastId);
         toast.error("An error occurred during signin. Please try again");
     }
 
 
 }
+
+  // Show a sonner loading toast while navigating to signup
+  async function handleGetStarted() {
+    const loadingToastId = toast.loading("Redirecting to Sign up...");
+    try {
+      await router.push('/user/signup');
+      toast.dismiss(loadingToastId);
+      toast.success('Opening Sign up');
+    } catch (err) {
+      console.error('Navigation error', err);
+      toast.dismiss(loadingToastId);
+      toast.error('Unable to open Sign up. Please try again.');
+    }
+  }
   return (
     <section className="relative flex flex-col items-center justify-center text-center text-gray-900 min-h-screen w-full overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
       {/* Hero Content */}
@@ -63,11 +74,14 @@ const Hero = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 1.2 }}
       >
-        <button className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300">
-        <Link href={"/user/signup"} >  Get Started</Link>
+        <button
+          className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300"
+          onClick={handleGetStarted}
+        >
+          Get Started
         </button>
         <button className="px-8 py-3 bg-transparent border-2 border-blue-600 text-blue-600 font-semibold rounded-full hover:bg-blue-50 transition-all duration-300" onClick={handaletrynow}>
-         Try Now
+         Try Demo
         </button>
       </motion.div>
 

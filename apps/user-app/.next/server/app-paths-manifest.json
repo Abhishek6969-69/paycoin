@@ -1,6 +1,12 @@
 {
-  "/Landingpage/page": "app/Landingpage/page.js",
+  "/user/signin/page": "app/user/signin/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/user/balance/route": "app/api/user/balance/route.js",
+  "/api/user/route": "app/api/user/route.js",
+  "/(dashboard)/p2ptransfer/page": "app/(dashboard)/p2ptransfer/page.js",
+  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
+  "/(dashboard)/withdraw/page": "app/(dashboard)/withdraw/page.js",
+  "/(dashboard)/transfer/page": "app/(dashboard)/transfer/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js"
 }

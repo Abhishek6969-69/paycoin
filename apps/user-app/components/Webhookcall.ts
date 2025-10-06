@@ -15,8 +15,7 @@ export const Webhookcall = async({token, amount, user_identifier}: {token: strin
     const baseUrl = bankServerUrl.endsWith('/') ? bankServerUrl.slice(0, -1) : bankServerUrl;
     const fullUrl = `${baseUrl}/confirm-payment`;
 
-    console.log("Making webhook call to:", fullUrl);
-    console.log("Payload:", { token, user_identifier, amount });
+  // Making webhook call
 
     const response = await axios.post(fullUrl, {
       token, 
@@ -29,7 +28,7 @@ export const Webhookcall = async({token, amount, user_identifier}: {token: strin
       }
     });
 
-    console.log("Webhook call successful:", response.status);
+    // Webhook call successful
     return true;
   } catch (error) {
     console.error("Error in webhook call:", error);

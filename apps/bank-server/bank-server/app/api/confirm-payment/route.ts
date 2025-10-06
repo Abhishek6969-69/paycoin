@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { token, amount, user_identifier } = body;
 
-    console.log("Confirm payment request received:", { token, amount, user_identifier });
+  // Confirm payment request received
 
     if (!token || !amount || !user_identifier) {
       console.error("Missing required fields:", { token, amount, user_identifier });
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const payloadStr = JSON.stringify(payload);
     const signature = crypto.createHmac("sha256", WEBHOOK_SECRET).update(payloadStr).digest("hex");
 
-    console.log("Calling webhook:", WEBHOOK_URL + "/hdfcWebhook");
+  // Calling webhook
 
     // Call the webhook to process the payment
     const webhookResp = await fetch(`${WEBHOOK_URL}/hdfcWebhook`, {
@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
         statusText: webhookResp.statusText,
         error: errorText
       });
-      
       return NextResponse.json(
         { success: false, error: "Payment processing failed" },
         { status: 500 }
@@ -52,7 +51,7 @@ export async function POST(req: NextRequest) {
     }
 
     const webhookResult = await webhookResp.json();
-    console.log("Webhook call successful:", webhookResult);
+  // Webhook call successful
 
     return NextResponse.json({ 
       success: true, 

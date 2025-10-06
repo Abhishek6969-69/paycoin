@@ -94,7 +94,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {children}
             </div>
           </div>
-          {/* Toaster now mounted globally in Providers */}
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'bg-white border border-gray-200 text-gray-900',
+              duration: 4000,
+            }}
+          />
         </main>
 
         {/* Mobile Overlay */}

@@ -19,8 +19,8 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setLoading(true);
     setErrorMessage("");
 
@@ -39,81 +39,93 @@ export default function SignInPage() {
     setLoading(false);
   };
 
+  // Try Now: sign in with the demo account you provided
+  const tryNow = async () => {
+    setLoading(true);
+    setErrorMessage("");
+    const demoPhone = "9696694046";
+    const demoPassword = "123456789"; // as requested, do not alter
+
+    setData({ phone: demoPhone, password: demoPassword });
+
+    const result = await signIn("credentials", {
+      phone: demoPhone,
+      password: demoPassword,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setErrorMessage(result.error);
+    } else {
+      router.push("/dashboard");
+    }
+
+    setLoading(false);
+  };
+
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <div className="container mx-auto px-4 py-16 flex items-center justify-center">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6"/></svg>
-              </div>
-              <h1 className="text-2xl font-bold">CoinPay</h1>
-            </div>
-            <p className="text-sm text-gray-600 mt-2">Secure access to your CoinPay account</p>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <div className="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-lg">
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center">Welcome back</h2>
+        <p className="text-sm text-gray-600 text-center mt-2">Sign in to continue to <span className="font-semibold text-blue-600">CoinPay</span></p>
+
+        {error && (
+          <p className="text-red-500 text-sm mt-4 text-center">
+            {decodeURIComponent(error)}
+          </p>
+        )}
+        {errorMessage && (
+          <p className="text-red-500 text-sm mt-4 text-center">{errorMessage}</p>
+        )}
+
+        <form onSubmit={(e) => handleSignIn(e)} className="space-y-5 mt-6">
+          <div>
+            <Label className="text-sm text-gray-700" label="Phone Number" />
+            <Input
+              className="w-full border border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg p-3"
+              placeholder="Enter your phone number"
+              type="tel"
+              maxlength={10}
+              onChange={(value) => setData({ ...data, phone: value })}
+            />
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-gray-900 text-center">Sign In</h2>
-            {error && (
-              <p className="text-red-500 text-sm mt-3 text-center">{decodeURIComponent(error)}</p>
-            )}
-            {errorMessage && (
-              <p className="text-red-500 text-sm mt-3 text-center">{errorMessage}</p>
-            )}
-
-            <form onSubmit={handleSignIn} className="space-y-5 mt-6">
-              <div className="space-y-2">
-                <Label className="text-sm text-gray-700" label="Phone Number" />
-                <Input
-                  className="w-full bg-gray-50 border border-gray-200 focus:border-blue-600 focus:ring-blue-600/20 rounded-lg p-3 text-gray-900"
-                  placeholder="Enter your phone number"
-                  type="tel"
-                  maxlength={10}
-                  value={data.phone}
-                  onChange={(value) => setData({ ...data, phone: value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm text-gray-700" label="Password" />
-                <Input
-                  className="w-full bg-gray-50 border border-gray-200 focus:border-blue-600 focus:ring-blue-600/20 rounded-lg p-3 text-gray-900"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={data.password}
-                  onChange={(value) => setData({ ...data, password: value })}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full py-3 text-base font-medium bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:from-blue-500 hover:to-blue-600 transition-all duration-200"
-                onClick={(e) => handleSignIn(e)}
-              >
-                {loading ? "Signing in..." : "Sign In "}
-              </Button>
-
-              <button
-                type="button"
-                className="w-full py-3 text-base font-medium bg-white border border-gray-200 text-blue-600 rounded-lg shadow-sm hover:bg-gray-50 transition-all duration-200"
-                onClick={(e) => {
-                  setData({ ...data, phone: "9696694046", password: "123456789" });
-                }}
-              >
-                Autofill Test
-              </button>
-            </form>
-
-            <div className="text-center text-sm text-gray-600 mt-5">
-              <p>
-                Don’t have an account?
-                <a href="/user/signup" className="text-blue-600 hover:underline ml-1">
-                  Sign Up
-                </a>
-              </p>
-            </div>
+          <div>
+            <Label className="text-sm text-gray-700" label="Password" />
+            <Input
+              className="w-full border border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg p-3"
+              type="password"
+              placeholder="Enter your password"
+              onChange={(value) => setData({ ...data, password: value })}
+            />
           </div>
+
+          <div className="space-y-3">
+            <Button
+              type="submit"
+              className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow"
+              onClick={() => {}}
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
+
+            {/* <Button
+              type="button"
+              className="w-full py-3 text-lg font-semibold border-2 border-blue-600 text-blue-600 rounded-lg bg-transparent hover:bg-blue-50"
+              onClick={tryNow}
+            >
+              {loading ? "Signing in..." : "Try Now"}
+            </Button> */}
+          </div>
+        </form>
+
+        <div className="text-center text-sm text-gray-600 mt-6">
+          <p>
+            Don’t have an account?
+            <a href="/user/signup" className="text-blue-600 hover:underline ml-1">
+              Sign Up
+            </a>
+          </p>
         </div>
       </div>
     </div>

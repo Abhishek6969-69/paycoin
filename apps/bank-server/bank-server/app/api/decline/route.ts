@@ -7,7 +7,6 @@ const CLIENT_RETURN_URL = process.env.CLIENT_RETURN_URL || "http://localhost:300
 // Helper function to safely create redirect URLs
 function createRedirectUrl(status: string, token: string): URL {
   const baseUrl = CLIENT_RETURN_URL || "http://localhost:3000/transactions";
-  console.log("🔍 Creating decline redirect URL with baseUrl:", baseUrl);
   
   if (!baseUrl || baseUrl === "null" || baseUrl === "undefined") {
     console.error("❌ Invalid CLIENT_RETURN_URL:", baseUrl);
@@ -18,13 +17,11 @@ function createRedirectUrl(status: string, token: string): URL {
   url.searchParams.set("status", status);
   url.searchParams.set("token", token || "unknown");
   
-  console.log("✅ Created decline redirect URL:", url.toString());
   return url;
 }
 
 export async function POST(req: NextRequest) {
   let token = "";
-  console.log("🔍 Bank server decline route - CLIENT_RETURN_URL:", CLIENT_RETURN_URL);
   
   try {
     const form = await req.formData();

@@ -19,13 +19,9 @@ export default function ProfilePage() {
         async function fetchUserData() {
             try {
                 setIsLoading(true);
-                const res = await fetch('/api/user/me');
-                if (res.ok) {
-                    const json = await res.json();
-                    if (json.success) setUserData(json.user);
-                } else {
-                    console.warn('Failed to fetch current user for profile page', res.status);
-                }
+                // const response = await fetch("/api/user");
+                const response=await userdetailservercomponent();
+                setUserData(response)
                 // if (!response.ok) {
                 //     throw new Error("Failed to fetch user data");
                 // }

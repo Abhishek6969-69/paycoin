@@ -10,7 +10,6 @@ const CLIENT_RETURN_URL = process.env.CLIENT_RETURN_URL || "http://localhost:300
 // Helper function to safely create redirect URLs
 function createRedirectUrl(status: string, token: string, error?: string): URL {
   const baseUrl = CLIENT_RETURN_URL || "http://localhost:3000/transactions";
-  console.log("🔍 Creating redirect URL with baseUrl:", baseUrl);
   
   if (!baseUrl || baseUrl === "null" || baseUrl === "undefined") {
     console.error("❌ Invalid CLIENT_RETURN_URL:", baseUrl);
@@ -24,13 +23,11 @@ function createRedirectUrl(status: string, token: string, error?: string): URL {
     url.searchParams.set("error", error);
   }
   
-  console.log("✅ Created redirect URL:", url.toString());
   return url;
 }
 
 export async function POST(req: NextRequest) {
   let token = "";
-  console.log("🔍 Bank server approve route - CLIENT_RETURN_URL:", CLIENT_RETURN_URL);
   
   try {
     const form = await req.formData();
@@ -48,7 +45,7 @@ export async function POST(req: NextRequest) {
     const payloadStr = JSON.stringify(payload);
     const signature = crypto.createHmac("sha256", WEBHOOK_SECRET).update(payloadStr).digest("hex");
 
-    // call webhook
+  // call webhook
     const webhookResp = await fetch(`${WEBHOOK_URL}/hdfcWebhook`, {
       method: "POST",
       headers: {
@@ -70,8 +67,8 @@ export async function POST(req: NextRequest) {
     }
 
     // success
-    const url = createRedirectUrl("success", token);
-    return NextResponse.redirect(url, { status: 302 });
+  const url = createRedirectUrl("success", token);
+  return NextResponse.redirect(url, { status: 302 });
   } catch (err) {
     console.error("approve handler error:", err);
     try {

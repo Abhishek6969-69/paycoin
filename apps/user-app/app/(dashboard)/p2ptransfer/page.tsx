@@ -38,8 +38,7 @@ setans(value);
 
     const loadingToast = toast.loading("Processing your request...");
     try {
-      const result = await P2PTransfermoney(to, parsedAmount * 100);
-      console.log(result.success); // Now safe to access
+  const result = await P2PTransfermoney(to, parsedAmount * 100);
       toast.dismiss(loadingToast);
 
       if (result.success) {

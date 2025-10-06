@@ -7,7 +7,6 @@ import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 // import Router from "next/router";
 import { useRouter } from "next/navigation";
-import userdetailservercomponent from "components/userdetailservercomponent";
 import Image from "next/image";
 
 interface UserSession {
@@ -40,17 +39,14 @@ const router=useRouter()
       try {
         const transferData1 = await p2ptransferserver();
         const { transfer } = transferData1;
-        // fetch the current authenticated user from server API
-        try {
-          const res = await fetch('/api/user/me');
-          if (res.ok) {
-            const json = await res.json();
-            if (json.success) setUser(json.user);
-          } else {
-            console.warn('Could not fetch current user', res.status);
-          }
-        } catch (e) {
-          console.error('Error fetching current user', e);
+
+        // Fetch authenticated user via API
+        const resp = await fetch('/api/user');
+        if (resp.ok) {
+          const userData = await resp.json();
+          setUser(userData);
+        } else {
+          console.warn('Unable to fetch user data', resp.status);
         }
 
         if (!Array.isArray(transfer)) {

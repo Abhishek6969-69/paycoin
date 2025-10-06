@@ -51,30 +51,6 @@ async function main() {
       },
     },
   })
-  const abhi = await prisma.user.upsert({
-    where: { number: '9696694046' },
-    update: {},
-    create: {
-      number: '9696694046',
-      password: await bcrypt.hash('123456789', 10),
-      name: 'Abhishek Yadav',
-      Balance: {
-        create: {
-            amount: 0,
-            locked: 0
-        }
-      }
-    }
-  })
-  // Ensure bank balance record exists
-  await prisma.bankBalance.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      totalAmount: BigInt(10000000000) // ₹100 crores in paisa
-    }
-  })
  
 }
 main()

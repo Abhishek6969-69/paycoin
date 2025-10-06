@@ -17,11 +17,12 @@ export async function GET() {
 
     // Fetch user from the database
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: Number(session.user.id) },
       select: {
         id: true,
         name: true,
         email: true,
+        number: true,
         profileImage: true, // Ensure your DB has this field
       },
     });

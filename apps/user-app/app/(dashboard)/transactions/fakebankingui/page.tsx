@@ -92,8 +92,6 @@ const FakeBankPayment = () => {
     const loadingToast = toast.loading("Processing your secure payment...");
     
     try {
-      console.log("Initiating payment confirmation with:", { token, amount, user_identifier });
-      
       const success = await Webhookcall({ token, amount, user_identifier });
       
       toast.dismiss(loadingToast);
