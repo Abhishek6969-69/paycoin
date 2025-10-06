@@ -2,15 +2,7 @@
   "node": {
     "75e404fe7df6c781cc45324a5c3b1c37b8056474": {
       "workers": {
-        "app/(dashboard)/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fabhishekyadav%2FDesktop%2Fcoinpay%2Fapps%2Fuser-app%2Fcomponents%2Fp2ptransfer.tsx%22%2C%5B%22default%22%5D%5D%2C%5B%22%2FUsers%2Fabhishekyadav%2FDesktop%2Fcoinpay%2Fapps%2Fuser-app%2Fcomponents%2Fuserdetailservercomponent.tsx%22%2C%5B%22default%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(dashboard)/dashboard/page": "action-browser"
-      }
-    },
-    "b50eb04b0437b30a11f925bfa8d45272dd05b272": {
-      "workers": {
-        "app/(dashboard)/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fabhishekyadav%2FDesktop%2Fcoinpay%2Fapps%2Fuser-app%2Fcomponents%2Fp2ptransfer.tsx%22%2C%5B%22default%22%5D%5D%2C%5B%22%2FUsers%2Fabhishekyadav%2FDesktop%2Fcoinpay%2Fapps%2Fuser-app%2Fcomponents%2Fuserdetailservercomponent.tsx%22%2C%5B%22default%22%5D%5D%5D&__client_imported__=true!"
+        "app/(dashboard)/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fabhishekyadav%2FDesktop%2Fcoinpay%2Fapps%2Fuser-app%2Fcomponents%2Fp2ptransfer.tsx%22%2C%5B%22default%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(dashboard)/dashboard/page": "action-browser"
@@ -26,5 +18,5 @@
     }
   },
   "edge": {},
-  "encryptionKey": "f6+0h9K/F5FvDmEGW6cKh2DuuuIKH3Hi6WOEP07fPdU="
+  "encryptionKey": "IDFMYwZBzgqUVTgv+UKSxUo6vj14u/T0sy7nSJECPlM="
 }

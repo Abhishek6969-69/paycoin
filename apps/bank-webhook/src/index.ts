@@ -49,29 +49,38 @@ app.post("/hdfcWebhook", async (req, res) => {
     if (!token) {
         return res.status(400).json({ error: "Token is required" });
     }
-    const onramptrans= await db.onRampTransaction.findFirst({
-        where:{
-            token
-        }
-    })
-  
-    if(onramptrans?.status=="Success"){
-        return res.json({msg:"payment is already done you are trying again"})
+    const onramptrans = await db.onRampTransaction.findFirst({ where: { token } });
+
+    if (!onramptrans) {
+        console.error(`On-ramp transaction not found for token=${token}`);
+        return res.status(404).json({ error: 'Transaction not found' });
     }
+
+    if (onramptrans.status === "Success") {
+        return res.json({ msg: "payment is already done you are trying again" });
+    }
+
+    // Ensure amount is an integer (paisa). Defensive: round if float provided.
+    const amountInt = Number.isFinite(amount) ? Math.round(amount) : NaN;
+    if (Number.isNaN(amountInt) || amountInt < 0) {
+        console.error('Invalid amount in webhook payload:', amount);
+        return res.status(400).json({ error: 'Invalid amount' });
+    }
+
     const paymentInformation: {
         token: string;
         userId: string;
-        amount: number
+        amount: number;
     } = {
         token: token,
         userId: user_identifier.toString(),
-        amount: amount
+        amount: amountInt,
     };
 
     try {
         // Check transaction type to determine if we should increment or decrement balance
-        const transactionType = onramptrans?.type || "DEPOSIT";
-        
+        const transactionType = onramptrans.type || "DEPOSIT";
+
         await db.$transaction(async (tx) => {
             // Ensure bank has a balance record (initialize with ₹100 crores if not exists)
             const bankBalance = await tx.bankBalance.upsert({
@@ -149,19 +158,23 @@ app.post("/hdfcWebhook", async (req, res) => {
             token: token,
             amount: amount
         });
-    } catch(e) {
-        console.error("Webhook processing error:", e);
+    } catch (e) {
+        console.error("Webhook processing error:", e instanceof Error ? e.stack || e.message : e);
+
+        // Prisma missing model/table errors (e.g., P2021) are common when migrations haven't been applied
+        if (e && typeof e === 'object' && (e as any).code === 'P2021') {
+            return res.status(500).json({
+                success: false,
+                error: 'Database table missing',
+                message: `Prisma model/table ${(e as any).meta?.modelName || 'unknown'} not found. Please run migrations and seed the DB.`
+            });
+        }
+
         res.status(500).json({
             success: false,
             error: "Error while processing webhook",
             message: e instanceof Error ? e.message : "Unknown error"
         });
-    } finally {
-        try {
-            await db.$disconnect();
-        } catch (disconnectError) {
-            console.error("Error disconnecting from database:", disconnectError);
-        }
     }
 
 })

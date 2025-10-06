@@ -33938,21 +33938,26 @@ app.post("/hdfcWebhook", async (req, res) => {
   if (!token) {
     return res.status(400).json({ error: "Token is required" });
   }
-  const onramptrans = await db_default.onRampTransaction.findFirst({
-    where: {
-      token
-    }
-  });
-  if (onramptrans?.status == "Success") {
+  const onramptrans = await db_default.onRampTransaction.findFirst({ where: { token } });
+  if (!onramptrans) {
+    console.error(`On-ramp transaction not found for token=${token}`);
+    return res.status(404).json({ error: "Transaction not found" });
+  }
+  if (onramptrans.status === "Success") {
     return res.json({ msg: "payment is already done you are trying again" });
+  }
+  const amountInt = Number.isFinite(amount) ? Math.round(amount) : NaN;
+  if (Number.isNaN(amountInt) || amountInt < 0) {
+    console.error("Invalid amount in webhook payload:", amount);
+    return res.status(400).json({ error: "Invalid amount" });
   }
   const paymentInformation = {
     token,
     userId: user_identifier.toString(),
-    amount
+    amount: amountInt
   };
   try {
-    const transactionType = onramptrans?.type || "DEPOSIT";
+    const transactionType = onramptrans.type || "DEPOSIT";
     await db_default.$transaction(async (tx) => {
       const bankBalance = await tx.bankBalance.upsert({
         where: { id: 1 },
@@ -34017,18 +34022,19 @@ app.post("/hdfcWebhook", async (req, res) => {
       amount
     });
   } catch (e) {
-    console.error("Webhook processing error:", e);
+    console.error("Webhook processing error:", e instanceof Error ? e.stack || e.message : e);
+    if (e && typeof e === "object" && e.code === "P2021") {
+      return res.status(500).json({
+        success: false,
+        error: "Database table missing",
+        message: `Prisma model/table ${e.meta?.modelName || "unknown"} not found. Please run migrations and seed the DB.`
+      });
+    }
     res.status(500).json({
       success: false,
       error: "Error while processing webhook",
       message: e instanceof Error ? e.message : "Unknown error"
     });
-  } finally {
-    try {
-      await db_default.$disconnect();
-    } catch (disconnectError) {
-      console.error("Error disconnecting from database:", disconnectError);
-    }
   }
 });
 app.listen(process.env.PORT || 3003);

@@ -12,20 +12,45 @@ export default async function Createonramptransaction({amount,provider}:{amount:
     }
 
     const userid = Number(session?.user?.id);
-    const token1 = (Math.random()).toString();
+    if (!userid || Number.isNaN(userid)) {
+        console.error('Invalid session user id:', session?.user?.id);
+        throw new Error('Invalid session. Please sign in again.');
+    }
+
+    // Ensure the user exists in the database (avoid foreign key violations)
+    const dbUser = await prisma.user.findUnique({ where: { id: userid } });
+    if (!dbUser) {
+        console.error(`User id ${userid} not found in database`);
+        throw new Error('User not found in database. Please sign up.');
+    }
+
+    const token1 = Math.random().toString(36).slice(2);
+
+    // Validate and convert amount
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+        console.error('Invalid amount for onramp transaction:', amount);
+        throw new Error('Invalid amount');
+    }
+    const paiseAmount = Math.round(numericAmount * 100);
 
     // Create the onRampTransaction in the database
-    await prisma.onRampTransaction.create({
-        data: {
-            userId: userid,
-            amount: Number(amount) * 100,
-            startTime: new Date(),
-            token: token1,
-            provider,
-            status: "Processing",
-            type: "DEPOSIT"
-        }
-    });
+    try {
+        await prisma.onRampTransaction.create({
+            data: {
+                userId: userid,
+                amount: paiseAmount,
+                startTime: new Date(),
+                token: token1,
+                provider,
+                status: "Processing",
+                type: "DEPOSIT"
+            }
+        });
+    } catch (e) {
+        console.error('Failed to create onRampTransaction:', e);
+        throw e;
+    }
 
     // Create redirect URL for bank payment simulation
     const paise = Number(amount) * 100; // Convert to paise

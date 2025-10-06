@@ -35,9 +35,6 @@ async function getBalance() {
         console.error("Error fetching balance:", e);
         return { amount: 0, locked: 0 };
     }
-    finally{
-        await prisma.$disconnect();
-    }
    
     
    

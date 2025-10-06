@@ -6,7 +6,8 @@
     },
     "scripts": {
         "build": "tsc",
-        "generate": "prisma generate --schema=prisma/schema.prisma"
+        "generate": "prisma generate --schema=prisma/schema.prisma",
+        "reset-and-seed": "prisma migrate reset --force --skip-seed && ts-node prisma/seed.ts"
     },
     "exports": {
         "./client": "./index.ts"

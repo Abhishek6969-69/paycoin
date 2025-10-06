@@ -9,12 +9,13 @@ const Hero = () => {
   const router=useRouter()
   async function handaletrynow(){
     const loadingToastId = toast.loading("Signing in as Test User");
-    try{
-        const res = await signIn('credentials', {
-            phone: '9696694046',
-            password: '123456',
-            redirect: false
-        })
+  try{
+    const res = await signIn('credentials', {
+      phone: '9696694046',
+      // seeded password is 123456789
+      password: '123456789',
+      redirect: false
+    })
 
         toast.dismiss(loadingToastId);
 

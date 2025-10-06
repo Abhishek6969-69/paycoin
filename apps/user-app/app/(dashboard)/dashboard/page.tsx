@@ -40,8 +40,18 @@ const router=useRouter()
       try {
         const transferData1 = await p2ptransferserver();
         const { transfer } = transferData1;
-        const userData = await userdetailservercomponent();
-        setUser(userData);
+        // fetch the current authenticated user from server API
+        try {
+          const res = await fetch('/api/user/me');
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success) setUser(json.user);
+          } else {
+            console.warn('Could not fetch current user', res.status);
+          }
+        } catch (e) {
+          console.error('Error fetching current user', e);
+        }
 
         if (!Array.isArray(transfer)) {
           console.error("Invalid data received ❌", transfer);

@@ -62,6 +62,5 @@ export default async function P2PTransfermoney(to: string, amount: number): Prom
         : "Transfer failed due to an error";
     return { success: false, message };
   } finally {
-    await prisma.$disconnect();
   }
 }
