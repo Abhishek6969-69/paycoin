@@ -33910,13 +33910,6 @@ var webhookschema = z.object({
   amount: z.number()
 });
 app.post("/hdfcWebhook", async (req, res) => {
-  console.log("Webhook received:", {
-    body: req.body,
-    headers: {
-      "x-hdfc-signature": req.headers["x-hdfc-signature"],
-      "content-type": req.headers["content-type"]
-    }
-  });
   const receivedSignature = req.headers["x-hdfc-signature"];
   const webhookSecret = process.env.WEBHOOK_SECRET || "dev_secret";
   if (receivedSignature) {
@@ -33960,7 +33953,6 @@ app.post("/hdfcWebhook", async (req, res) => {
         create: {
           id: 1,
           totalAmount: BigInt(1e10)
-          // ₹100 crores in paisa
         }
       });
       if (transactionType === "WITHDRAW") {
@@ -34004,12 +33996,11 @@ app.post("/hdfcWebhook", async (req, res) => {
         data: { status: "Success" }
       });
       const balanceInRupees = Number(updatedBankBalance.totalAmount) / 100;
-      console.log(`[BANK] ${transactionType}: \u20B9${paymentInformation.amount / 100} | Bank Balance: \u20B9${balanceInRupees.toLocaleString("en-IN")} | User: ${paymentInformation.userId}`);
+      console.info(`[BANK] ${transactionType}: \u20B9${paymentInformation.amount / 100} | Bank Balance: \u20B9${balanceInRupees.toLocaleString("en-IN")} | User: ${paymentInformation.userId}`);
     }, {
       timeout: 1e4
-      // Increase timeout to 10 seconds
     });
-    console.log(`Payment processed successfully: ${token} - \u20B9${amount / 100} for user ${user_identifier}`);
+    console.info(`Payment processed successfully: ${token} - \u20B9${amount / 100} for user ${user_identifier}`);
     res.json({
       success: true,
       message: "Payment captured successfully",

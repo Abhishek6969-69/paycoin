@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import prisma from "@repo/db/client";
 import Addmoney from "../../../components/Addmoney";
 import { OnRampTransactions } from "../../../components/Onramptransaction";
