@@ -15,8 +15,8 @@ function createRedirectUrl(status: string, token: string, error?: string): URL {
     console.error("❌ Invalid CLIENT_RETURN_URL:", baseUrl);
     throw new Error("CLIENT_RETURN_URL is not properly configured");
   }
-  
-  const url = new URL(baseUrl);
+
+  const url = new URL(baseUrl) ;
   url.searchParams.set("status", status);
   url.searchParams.set("token", token || "unknown");
   if (error) {
