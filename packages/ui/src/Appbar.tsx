@@ -1,8 +1,5 @@
-import { useSession } from "next-auth/react";
+"use client";
 import { Button } from "./button";
-import { Session } from "inspector/promises";
-// import { useRouter } from "next/router";
-import { useEffect } from "react";
 interface AppbarProps {
     user?: {
         name?: string | null;
@@ -17,19 +14,8 @@ export const Appbar = ({
     onSignin,
     onSignout
 }: AppbarProps) => {
-    const session=useSession();
-    // const router=useRouter();
-    
-        // if (session.status === "loading") return; 
-    //     if (!session.data?.user) {
-    //       router.push("/user/signin"); // Redirect to sign-in if not authenticated
-    //     }
-    //   }, [session]);
-    
-      // Handle loading state
-      if (session.status === "loading") {
-        return <div className="bg-white border-b border-gray-200 h-16"></div>;
-      }
+    // Appbar is a presentational client component. The authenticated
+    // session should be provided by a parent via the `user` prop.
     
     return <div className="flex justify-between items-center px-8 py-4 bg-white border-b border-gray-200 shadow-md backdrop-blur-lg bg-white/95">
         <div className="flex items-center gap-4">
