@@ -30,10 +30,22 @@ export async function POST(req: NextRequest) {
   let token = "";
   
   try {
-    const form = await req.formData();
-    token = String(form.get("token") ?? "");
-    const amount = Number(form.get("amount") ?? 0); // paise
-    const user_identifier = String(form.get("user_identifier") ?? "");
+    // Support both application/json and form-data payloads for easier testing
+    const contentType = req.headers.get('content-type') || '';
+    let amount: number | undefined;
+    let user_identifier: string | undefined;
+
+    if (contentType.includes('application/json')) {
+      const body = await req.json();
+      token = String(body.token ?? '');
+      amount = Number(body.amount ?? 0);
+      user_identifier = String(body.user_identifier ?? '');
+    } else {
+      const form = await req.formData();
+      token = String(form.get("token") ?? "");
+      amount = Number(form.get("amount") ?? 0); // paise
+      user_identifier = String(form.get("user_identifier") ?? "");
+    }
 
     if (!token || !amount || !user_identifier) {
       console.error("Missing required fields:", { token, amount, user_identifier });
