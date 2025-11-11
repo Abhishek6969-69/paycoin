@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cd bank-server && npm run dev",
-    "build": "cd bank-server && npm run build",
-    "start": "cd bank-server && npm run start"
+    "dev": "node run-build.js && (cd bank-server && npm run dev)",
+    "build": "node run-build.js",
+    "start": "node run-build.js && (cd bank-server && npm run start)"
   }
 }

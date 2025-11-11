@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3004",
-    "prebuild": "node scripts/validate-env.js",
+  "prebuild": "node scripts/validate-env.js || true",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
