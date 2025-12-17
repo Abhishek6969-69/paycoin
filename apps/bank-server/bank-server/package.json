@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3004",
-  "prebuild": "node scripts/validate-env.js || true",
+    "prebuild": "node scripts/validate-env.js || true",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.3",
+    "next": "15.5.9",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4"
   },
