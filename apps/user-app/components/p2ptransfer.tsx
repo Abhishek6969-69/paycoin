@@ -3,10 +3,11 @@
 import db from '@repo/db/client'
 import { getServerSession } from "next-auth";
 import { authOptions } from '../app/lib/auth';
-export default async function p2ptransferserver() {
+export default async function p2ptransferserver(limit = 200) {
+  let session = null;
 
   try{
-    const session = await getServerSession(authOptions);
+    session = await getServerSession(authOptions);
     
     
     if (!session?.user) {
@@ -18,7 +19,18 @@ export default async function p2ptransferserver() {
       }
     }
     
-    const transfer=await db.p2pTransfer.findMany({ 
+    const transfer=await db.p2pTransfer.findMany({
+      take: limit,
+      orderBy: {
+        timestamp: "desc"
+      },
+      select: {
+        id: true,
+        amount: true,
+        timestamp: true,
+        fromUserId: true,
+        toUserId: true
+      },
       where:{
         OR:[{
         fromUserId:Number(session?.user?.id)},
@@ -28,11 +40,8 @@ export default async function p2ptransferserver() {
   })
   return {transfer,session}
 }
-  finally {
-    await db.$disconnect(); 
+  catch (error) {
+    console.error("Error fetching p2p transfers", error);
+    return { transfer: [], session };
   }
-
-
-
-
 }

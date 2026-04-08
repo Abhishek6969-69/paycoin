@@ -1,44 +1,49 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Card } from "@repo/ui/card";
-import Input from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
-import { Label } from "@repo/ui/label";
-import Option from "@repo/ui/option";
 import { toast } from "sonner";
+import { ArrowDownToLine, Building2, Loader2, ShieldCheck } from "lucide-react";
 
 interface WithdrawResponse {
   token: string;
   redirectUrl: string;
 }
 
+const SUPPORTED_BANKS = [
+  { name: "HDFC", redirecturl: "https://netbanking.hdfcbank.com/netbanking/" },
+  { name: "KOTAK", redirecturl: "https://netbanking.kotak.com/knb2/" },
+  { name: "State Bank of India", redirecturl: "https://netbanking.kotak.com/knb2/" }
+];
+
+const quickAmounts = [500, 1000, 2000];
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
 export default function WithdrawMoney() {
   const session = useSession();
   const [balance, setBalance] = useState<number>(0);
-  const SUPPORTED_BANKS = [
-    { name: "HDFC", redirecturl: "https://netbanking.hdfcbank.com/netbanking/" },
-    { name: "KOTAK", redirecturl: "https://netbanking.kotak.com/knb2/" },
-    { name: "State Bank of India", redirecturl: "https://netbanking.kotak.com/knb2/" }
-  ];
-
-  const [redirecturl, setRedirecturl] = useState(SUPPORTED_BANKS[0]?.redirecturl);
   const [amount, setAmount] = useState("");
-  const [token, setToken] = useState<string>("");
   const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
+  const [submitting, setSubmitting] = useState(false);
 
-  // Fetch user balance
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await fetch('/api/user/balance');
+        const response = await fetch("/api/user/balance");
         if (response.ok) {
           const data = await response.json();
           setBalance(data.balance || 0);
         }
       } catch (error) {
-        console.error('Error fetching balance:', error);
+        console.error("Error fetching balance:", error);
       }
     };
 
@@ -47,110 +52,218 @@ export default function WithdrawMoney() {
     }
   }, [session.data?.user]);
 
-  const handleClick = async () => {
+  const parsedAmount = Number(amount || 0);
+  const amountValue = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+  const projectedReceive = Math.max(0, amountValue);
+
+  const selectedBank = useMemo(
+    () => SUPPORTED_BANKS.find((bank) => bank.name === provider),
+    [provider]
+  );
+
+  const handleWithdraw = async () => {
     if (!amount || !provider) {
-      toast.error("Please fill in all fields!");
-      return;
-    }
-    
-    const parsedAmount = Number(amount);
-    if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) {
-      toast.error("Please fill in valid positive value!");
+      toast.error("Please fill in all fields.");
       return;
     }
 
-    // Check if user has sufficient balance
+    if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      toast.error("Please enter a valid positive amount.");
+      return;
+    }
+
+    if (parsedAmount < 50 || parsedAmount > 25000) {
+      toast.error("Amount must be between ₹50 and ₹25,000.");
+      return;
+    }
+
     const amountInPaise = parsedAmount * 100;
     if (amountInPaise > balance) {
-      toast.error("Insufficient balance! Please enter a lower amount.");
+      toast.error("Insufficient balance. Enter a lower amount.");
       return;
     }
 
-    const loadingToast = toast.loading("Processing your request...");
+    const loadingToast = toast.loading("Processing withdrawal...");
+    setSubmitting(true);
+
     try {
-      const response = await fetch('/api/withdraw/create', {
-        method: 'POST',
+      const response = await fetch("/api/withdraw/create", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ amount, provider }),
+        body: JSON.stringify({ amount, provider })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create withdraw transaction');
+        throw new Error("Failed to create withdraw transaction");
       }
 
       const result: WithdrawResponse = await response.json();
-      
+
       if (result.redirectUrl) {
         toast.dismiss(loadingToast);
-        toast.success("Redirecting to bank server for withdrawal approval...");
+        toast.success("Redirecting to bank server for approval...");
         window.location.href = result.redirectUrl;
       }
-    } catch (e) {
+    } catch (error) {
       toast.dismiss(loadingToast);
       toast.error("An error occurred. Please try again.");
-      console.error("Withdraw failed:", e);
+      console.error("Withdraw failed:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 p-6">
-      <div className="max-w-md mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Cash Out</h1>
-          <p className="text-gray-600 text-sm mt-1">Transfer money from your wallet to your bank account</p>
-        </div>
-        
-        <Card title="Withdraw to Bank" className="bg-white border border-gray-200 shadow-sm">
-          <div className="p-6 space-y-6">
-            {/* Balance Display */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-blue-800">Available Balance:</span>
-                <span className="text-lg font-bold text-blue-900">₹{Math.max(0, balance / 100).toFixed(2)}</span>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label label="Amount" className="text-sm font-medium text-gray-700" />
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
-                <Input 
-                  placeholder="Enter amount to withdraw" 
-                  type="number" 
-                  className="w-full pl-8 bg-white border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500/20 rounded-lg transition-all" 
-                  onChange={(value) => setAmount(value)}
-                />
-              </div>
-            </div>
+    <div>
+      <div className="mb-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Payments</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Cash Out to Bank</h1>
+        <p className="mt-2 text-sm text-slate-500 sm:text-base">
+          Withdraw wallet balance instantly to your linked bank account.
+        </p>
+      </div>
 
-            <div className="space-y-2">
-              <Label label="Select Bank" className="text-sm font-medium text-gray-700" />
-              <Option
-                onselect={(value) => {
-                  const selectedBank = SUPPORTED_BANKS.find((x) => x.name === value);
-                  setRedirecturl(selectedBank?.redirecturl || "");
-                  setProvider(selectedBank?.name || "");
-                }}
-                options={SUPPORTED_BANKS.map((x) => ({ key: x.name, value: x.name }))}
-              />
-            </div>
-
-            <Button 
-              variant="secondary"
-              size="lg"
-              className="w-full" 
-              onClick={handleClick}
-            >
-              Withdraw to Bank
-            </Button>
-            
-            <div className="text-center text-xs text-gray-500 mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-              <p>⚠️ Funds will be transferred to your selected bank account</p>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-200 px-6 py-5 sm:px-8">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                <ArrowDownToLine className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-slate-950">Withdraw to Bank</h2>
+                <p className="text-sm text-slate-500">Choose amount and bank for secure payout.</p>
+              </div>
             </div>
           </div>
-        </Card>
+
+          <div className="space-y-7 px-6 py-6 sm:px-8">
+            <div>
+              <div className="mb-3 flex items-center gap-3">
+                <label className="text-sm font-medium text-slate-800">Amount</label>
+              </div>
+
+              <div className="mb-4 flex flex-wrap gap-2">
+                {quickAmounts.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setAmount(String(value))}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                      amountValue === value
+                        ? "bg-slate-900 text-white"
+                        : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    }`}
+                  >
+                    {formatCurrency(value)}
+                  </button>
+                ))}
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Withdraw amount</div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-xl font-semibold text-slate-500">₹</span>
+                  <input
+                    value={amount}
+                    type="number"
+                    placeholder="0.00"
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full border-0 bg-transparent p-0 text-xl font-semibold text-slate-950 placeholder:text-slate-300 focus:outline-none"
+                  />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-slate-500">Minimum ₹50. Maximum ₹25,000. No processing fee.</p>
+            </div>
+
+            <div>
+              <label className="mb-3 block text-sm font-medium text-slate-800">Select Bank</label>
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                <select
+                  value={provider}
+                  onChange={(e) => setProvider(e.target.value)}
+                  className="w-full border-0 bg-transparent p-0 text-base font-medium text-slate-900 focus:outline-none"
+                >
+                  {SUPPORTED_BANKS.map((bank) => (
+                    <option key={bank.name} value={bank.name}>
+                      {bank.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 px-4 py-4">
+              <div className="flex items-center justify-between text-sm text-slate-600">
+                <span>Withdraw amount</span>
+                <span className="font-semibold text-slate-900">{formatCurrency(amountValue)}</span>
+              </div>
+              <div className="mt-2 flex items-center justify-between text-sm text-slate-600">
+                <span>Fee</span>
+                <span className="font-semibold text-slate-900">₹0.00</span>
+              </div>
+              <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-2 text-sm text-slate-600">
+                <span>You will receive</span>
+                <span className="font-semibold text-slate-950">{formatCurrency(projectedReceive)}</span>
+              </div>
+            </div>
+
+            <Button
+              variant="primary"
+              size="lg"
+              className={`w-full rounded-2xl ${submitting ? "pointer-events-none opacity-80" : ""}`}
+              onClick={handleWithdraw}
+            >
+              {submitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Processing...
+                </span>
+              ) : (
+                "Withdraw to Bank"
+              )}
+            </Button>
+          </div>
+        </section>
+
+        <aside className="space-y-4">
+          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                <Building2 className="h-5 w-5" />
+              </div>
+              <p className="text-lg font-semibold text-slate-950">Summary</p>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Bank</div>
+                <div className="mt-2 text-sm font-semibold text-slate-900">{selectedBank?.name || "Not selected"}</div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 px-4 py-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">You Receive</div>
+                <div className="mt-1.5 text-2xl font-semibold text-slate-950">{formatCurrency(projectedReceive)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-blue-100 bg-blue-50 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-blue-600">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-base font-semibold text-slate-950">Secure withdrawal</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Funds are verified and routed to your selected bank account after confirmation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );

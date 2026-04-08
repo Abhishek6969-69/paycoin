@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Input from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
+import { startRouteLoading } from "./RouteLoader";
 
 export default function SignUpPage() {
     const [data, setData] = useState({
@@ -36,6 +37,7 @@ export default function SignUpPage() {
         if (result?.error) {
             setErrorMessage(result.error);
         } else {
+            startRouteLoading();
             router.push("/dashboard");
         }
 

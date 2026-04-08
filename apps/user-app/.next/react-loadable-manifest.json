@@ -4,5 +4,11 @@
     "files": [
       "static/chunks/_app-pages-browser_node_modules_react-chartjs-2_dist_index_js.js"
     ]
+  },
+  "components/ProfilePageClient.tsx -> components/profile": {
+    "id": "components/ProfilePageClient.tsx -> components/profile",
+    "files": [
+      "static/chunks/_app-pages-browser_components_profile_tsx.js"
+    ]
   }
 }

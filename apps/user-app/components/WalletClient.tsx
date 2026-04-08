@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
+import { startRouteLoading } from "./RouteLoader";
 
 export default function WalletClient() {
   const searchParams = useSearchParams();
@@ -28,6 +29,7 @@ export default function WalletClient() {
 
       // Auto redirect to transactions after 3 seconds
       const timer = setTimeout(() => {
+        startRouteLoading();
         router.push("/transactions");
       }, 3000);
 
@@ -35,6 +37,7 @@ export default function WalletClient() {
     } catch (error) {
       console.error("Error processing search params:", error);
       // Fallback redirect if there's an error
+      startRouteLoading();
       router.push("/transactions");
     }
   }, [searchParams, router, isClient]);
@@ -120,7 +123,10 @@ export default function WalletClient() {
           <div className="space-y-3">
             <Button 
               variant="primary"
-              onClick={() => router.push("/transactions")}
+              onClick={() => {
+                startRouteLoading();
+                router.push("/transactions");
+              }}
               className="w-full"
             >
               View Transactions
@@ -128,7 +134,10 @@ export default function WalletClient() {
             
             <Button 
               variant="secondary"
-              onClick={() => router.push("/dashboard")}
+              onClick={() => {
+                startRouteLoading();
+                router.push("/dashboard");
+              }}
               className="w-full"
             >
               Back to Dashboard

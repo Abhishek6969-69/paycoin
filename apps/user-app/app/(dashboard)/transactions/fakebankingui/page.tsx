@@ -8,6 +8,7 @@ import axios from "axios";
 import { Webhookcall } from "../../../../components/Webhookcall";
 import { Button } from "@repo/ui/button";
 import { toast } from "sonner";
+import { startRouteLoading } from "components/RouteLoader";
 
 const FakeBankPayment = () => {
   const [transactions, setTransactions] = useState<any>(null);
@@ -104,6 +105,7 @@ const FakeBankPayment = () => {
         
         // Wait a moment before redirecting to let user see the success message
         setTimeout(() => {
+          startRouteLoading();
           router.push(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/transactions`);
         }, 2000);
       } else {

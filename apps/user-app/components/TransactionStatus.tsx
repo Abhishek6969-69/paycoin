@@ -14,9 +14,12 @@ export default function TransactionStatus() {
 
   useEffect(() => {
     if (!isClient) return;
-    
-    const status = searchParams.get('status');
-    const error = searchParams.get('error');
+
+    // Prefer Next's useSearchParams, but fallback to window.location for
+    // external redirects (some redirects may not hydrate searchParams immediately).
+    const sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : searchParams;
+    const status = sp.get('status') || searchParams.get('status');
+    const error = sp.get('error') || searchParams.get('error');
     
     if (status === "success") {
       setStatusMessage(

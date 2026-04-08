@@ -1,48 +1,114 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Card } from "@repo/ui/card";
-import Input from "@repo/ui/input";
+
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@repo/ui/button";
 import P2PTransfermoney from "../../lib/actions/p2ptransfer";
-import { Label } from "@repo/ui/label";
 import { toast } from "sonner";
-import Option from "@repo/ui/option";
 import Option2 from "components/Option2";
 import { Findalluser } from "components/findalluser";
-interface TransferResponse {
-  success: boolean;
-  message: string;
+import {
+  CheckCircle2,
+  Loader2,
+  ShieldCheck,
+  Smartphone,
+  UserRound,
+  Wallet
+} from "lucide-react";
+
+type UserRecord = {
+  id: number;
+  name?: string | null;
+  number: string;
+};
+
+const quickAmounts = [100, 500, 1000];
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2
+  }).format(value);
 }
 
-function P2PTransfer() {
+export default function P2PTransfer() {
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
-  const [ans,setans]=useState<any>([]);
-useEffect(()=>{
- async function helper(){
-const value=await Findalluser();
-setans(value);
- }
- helper()
-},[])
+  const [users, setUsers] = useState<UserRecord[]>([]);
+  const [balance, setBalance] = useState<number | null>(null);
+  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    async function loadUsers() {
+      const value = await Findalluser();
+      setUsers(value);
+    }
+
+    loadUsers();
+  }, []);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        setBalanceLoading(true);
+        const res = await fetch("/api/user/balance");
+
+        if (res.ok) {
+          const data = await res.json();
+          setBalance(data.balance || 0);
+        }
+      } catch (e) {
+        console.error("balance fetch error", e);
+        setBalance(null);
+      } finally {
+        setBalanceLoading(false);
+      }
+    };
+
+    getBalance();
+  }, []);
+
+  const selectedUser = useMemo(
+    () => users.find((user) => user.number === to),
+    [to, users]
+  );
+
+  const parsedAmount = Number(amount || 0);
+  const amountValue = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+  const availableBalance = Math.max(0, (balance || 0) / 100);
+
   const handleTransfer = async () => {
     if (!to || to.length !== 10 || !/^\d{10}$/.test(to)) {
-      toast.error("Please enter a valid 10-digit phone number!");
-      return;
-    }
-    const parsedAmount = Number(amount);
-    if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) {
-      toast.error("Please enter a valid positive amount!");
+      toast.error("Please enter a valid 10-digit phone number.");
       return;
     }
 
-    const loadingToast = toast.loading("Processing your request...");
+    if (!selectedUser) {
+      toast.error("Choose a registered CoinPay user.");
+      return;
+    }
+
+    if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      toast.error("Please enter a valid positive amount.");
+      return;
+    }
+
+    setLoading(true);
+    setSuccess(false);
+    const loadingToast = toast.loading("Processing transfer...");
+
     try {
-  const result = await P2PTransfermoney(to, parsedAmount * 100);
+      const result = await P2PTransfermoney(to, parsedAmount * 100);
       toast.dismiss(loadingToast);
 
       if (result.success) {
-        toast.success(`Successfully sent ₹${amount} to ${to}`);
+        setSuccess(true);
+        toast.success(`Successfully sent ${formatCurrency(parsedAmount)} to ${selectedUser.name || to}`);
+        setAmount("");
+        setTo("");
+        setTimeout(() => setSuccess(false), 1800);
       } else {
         toast.error(result.message);
       }
@@ -50,89 +116,176 @@ setans(value);
       toast.dismiss(loadingToast);
       toast.error("An error occurred. Please try again.");
       console.error("Transfer failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto space-y-8">
-        {/* Enhanced Header Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl mx-auto mb-6 flex items-center justify-center border border-blue-200">
-              <span className="text-3xl">💸</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">Send Money</h1>
-            <p className="text-lg text-gray-600">Transfer money to any CoinPay user instantly and securely</p>
-          </div>
+    <div className="min-h-screen bg-slate-50 px-3 py-5 sm:px-4 lg:px-5">
+      <div className="mx-auto w-full max-w-[1320px]">
+        <div className="mb-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Payments</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">P2P Transfer</h1>
+          <p className="mt-2 text-sm text-slate-500 sm:text-base">
+            Send money instantly to another CoinPay user with a clean and secure workflow.
+          </p>
         </div>
-        
-        <Card
-          title=""
-          className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden"
-        >
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
-            <h2 className="text-2xl font-bold text-white mb-2">P2P Transfer</h2>
-            <p className="text-blue-100">Send money instantly to friends and family</p>
-          </div>
-          <div className="p-8 space-y-8">
-            <div className="space-y-4">
-              <Label label="Recipient Phone Number" className="text-base font-semibold text-gray-800" />
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-200 px-6 py-5 sm:px-8">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <Smartphone className="h-5 w-5" />
                 </div>
-                <Option2 onselect={(value:any)=>{setTo(value)}} 
-                    options={ans.map((x:any) => ({ key: x.number, value: x.number }))}
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-xl transition-all text-base font-medium"
-                 />
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <Label label="Transfer Amount" className="text-base font-semibold text-gray-800" />
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">₹</span>
-                <Input
-                  placeholder="0.00"
-                  type="number"
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-xl transition-all text-lg font-semibold"
-                  onChange={(value) => setAmount(value)}
-                />
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-950">Send Money</h2>
+                  <p className="text-sm text-slate-500">Use a registered mobile number to make an instant transfer.</p>
+                </div>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="space-y-8 px-6 py-6 sm:px-8">
+              <div>
+                <label className="mb-3 block text-sm font-medium text-slate-800">Recipient</label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
+                    <UserRound className="h-4 w-4" />
+                  </div>
+                  <Option2
+                    value={to}
+                    displayValue={to ? (selectedUser?.name ? `${selectedUser.name} - ${to}` : to) : ""}
+                    onselect={(value: string) => setTo(value)}
+                    options={users.map((user) => ({
+                      key: user.number,
+                      value: user.number,
+                      label: user.name || undefined
+                    }))}
+                    className="w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-4 shadow-sm transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <label className="block text-sm font-medium text-slate-800">Amount</label>
+                  <span className="text-sm text-slate-500">
+                    {balanceLoading ? "Loading balance..." : `Available ${formatCurrency(availableBalance)}`}
+                  </span>
+                </div>
+
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {quickAmounts.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setAmount(String(value))}
+                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                        amountValue === value
+                          ? "bg-slate-900 text-white"
+                          : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                      }`}
+                    >
+                      {formatCurrency(value)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Transfer amount</div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-xl font-semibold text-slate-500">₹</span>
+                    <input
+                      value={amount}
+                      type="number"
+                      placeholder="0.00"
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="w-full border-0 bg-transparent p-0 text-xl font-semibold text-slate-950 placeholder:text-slate-300 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 px-4 py-4">
+                <div className="flex items-center justify-between text-sm text-slate-600">
+                  <span>You send</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(amountValue)}</span>
+                </div>
+                <div className="mt-2 flex items-center justify-between text-sm text-slate-600">
+                  <span>Fee</span>
+                  <span className="font-semibold text-slate-900">₹0.00</span>
+                </div>
+                <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-2 text-sm text-slate-600">
+                  <span>Total</span>
+                  <span className="font-semibold text-slate-950">{formatCurrency(amountValue)}</span>
+                </div>
+              </div>
+
               <Button
                 variant="primary"
                 size="lg"
-                className="w-full py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                className={`w-full rounded-2xl ${loading ? "pointer-events-none opacity-80" : ""}`}
                 onClick={handleTransfer}
               >
-                Send Money Instantly
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processing...
+                  </span>
+                ) : success ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    Transfer complete
+                  </span>
+                ) : (
+                  "Send Money"
+                )}
               </Button>
             </div>
+          </section>
 
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-              <div className="flex items-center gap-3 text-blue-800">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
+          <aside className="space-y-4">
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                  <Wallet className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">Bank-Grade Security</p>
-                  <p className="text-xs text-blue-600">End-to-end encrypted instant transfers</p>
+                  <p className="text-lg font-semibold text-slate-950">Summary</p>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Recipient</div>
+                  <div className="mt-2 text-sm font-semibold text-slate-900">{selectedUser?.name || "Not selected"}</div>
+                  <div className="mt-1 text-sm text-slate-500">{to || "No mobile number entered"}</div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 px-4 py-3">
+                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Amount</div>
+                  <div className="mt-1.5 text-2xl font-semibold text-slate-950">{formatCurrency(amountValue)}</div>
                 </div>
               </div>
             </div>
-          </div>
-        </Card>
+
+            <div className="rounded-3xl border border-blue-100 bg-blue-50 p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-blue-600">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-base font-semibold text-slate-950">Secure transfer</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    Transfers are verified against registered users and processed with balance checks.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );
 }
-
-export default P2PTransfer;

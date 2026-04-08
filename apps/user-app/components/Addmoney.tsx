@@ -19,7 +19,8 @@ export default function AddMoney() {
   const [amount, setAmount] = useState("");
   const [token, setToken] = useState<string>("");
   const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
-const handelclick=async()=>{
+  const [loading, setLoading] = useState(false);
+  const handelclick=async()=>{
   if(!amount || !provider){
     toast.error("Please fill in all fields!");
     return;
@@ -30,12 +31,14 @@ const handelclick=async()=>{
     return;
   }
   const loadingtoast=toast.loading("Processing your request...");
+    setLoading(true);
   try{
     const result = await Createonramptransaction({ amount, provider });
-    if(result && result.token){
+      if(result && result.token){
       setToken(result.token);
       toast.dismiss(loadingtoast);
       toast.success("Redirecting to bank server for payment approval...");
+        setLoading(false);
       // Use the redirectUrl from the result instead
       window.location.href = result.redirectUrl;
     }
@@ -44,6 +47,7 @@ const handelclick=async()=>{
     toast.dismiss(loadingtoast);
     toast.error("An error occurred. Please try again.");
     console.error("Transfer failed:", e);
+    setLoading(false);
   }
   
 }
@@ -51,15 +55,16 @@ const handelclick=async()=>{
     <Card title="Add Money" className="w-full shadow-sm bg-white border border-gray-200">
       <div className="p-6 space-y-6">
         <div className="space-y-2">
-          <Label label="Amount" className="text-sm font-medium text-gray-700" />
+          <Label label="Amount (INR)" className="text-sm font-medium text-slate-600" />
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">₹</span>
             <Input 
               placeholder="Enter amount" 
               type="number" 
-              className="w-full pl-8 bg-white border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500/20 rounded-lg transition-all" 
+              className="w-full pl-8 bg-white border border-gray-200 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500/10 rounded-lg transition-all" 
               onChange={(value) => setAmount(value)}
             />
+            <p className="text-xs text-slate-400 mt-1">Min amount ₹10 — No processing fees</p>
           </div>
         </div>
 
@@ -78,11 +83,12 @@ const handelclick=async()=>{
         <Button 
           type="submit" 
           variant="primary"
-          size="lg"
-          className="w-full" 
+          size="md"
+          className="w-auto px-6 py-2 rounded-lg" 
           onClick={handelclick}
+          disabled={loading}
         >
-          Add Money
+          {loading ? 'Processing...' : 'Add Money'}
         </Button>
       </div>
     </Card>

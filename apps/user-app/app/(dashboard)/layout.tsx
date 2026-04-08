@@ -9,6 +9,9 @@ import { Shimmer } from "components/shimmer";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
+  const [walletLoading, setWalletLoading] = useState(true);
   const router = useRouter();
 
   
@@ -18,6 +21,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.push("/Landingpage");
     }
   }, [session, router]);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (!session.data?.user) {
+        return;
+      }
+
+      try {
+        setWalletLoading(true);
+        const res = await fetch("/api/user/balance");
+        if (res.ok) {
+          const data = await res.json();
+          setWalletBalance(Math.max(0, (data.balance || 0) / 100));
+        }
+      } catch (error) {
+        console.error("wallet balance fetch error", error);
+        setWalletBalance(0);
+      } finally {
+        setWalletLoading(false);
+      }
+    };
+
+    getBalance();
+  }, [session.data?.user]);
 
 
   if (session.status === "loading") {
@@ -34,7 +61,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Top Navigation Bar */}
       <div className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
-        <Appbar onSignin={signIn} onSignout={signOut} user={session.data.user} />
+        <Appbar
+          onSignin={signIn}
+          onSignout={signOut}
+          user={session.data.user}
+          walletBalance={walletBalance}
+          walletLoading={walletLoading}
+          isSidebarCollapsed={sidebarCollapsed}
+          onSidebarToggle={() => setSidebarCollapsed((prev) => !prev)}
+        />
       </div>
 
       <div className="flex flex-1">
@@ -48,43 +83,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Sidebar */}
         <div
-          className={`fixed lg:sticky lg:top-0 z-20 h-screen w-72 bg-white border-r border-gray-200 shadow-lg lg:shadow-none transition-transform duration-300 transform ${
+          className={`fixed lg:sticky lg:top-0 z-20 h-screen bg-white border-r border-gray-200 shadow-lg lg:shadow-none transition-all duration-300 transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          }`}
+          } ${sidebarCollapsed ? "w-72 lg:w-20" : "w-72"}`}
         >
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <span className="font-semibold text-gray-900">CoinPay</span>
-            </div>
-            <button 
-              onClick={() => setSidebarOpen(false)} 
-              className="lg:hidden text-gray-400 hover:text-gray-600 p-1 rounded transition-colors duration-200"
-            >
-              <Close />
-            </button>
-          </div>
-
           {/* Navigation Menu */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" />
-            <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transactions" />
-            <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer History" />
-            <Sidebaritem href="/withdraw" icon={<WithdrawIcon />} title="Cash Out" />
-            <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" />
-            <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" />
+          <nav className={`flex-1 py-6 space-y-2 ${sidebarCollapsed ? "px-2" : "px-4"}`}>
+            <div className="flex justify-end pb-2 lg:hidden">
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors duration-200"
+              >
+                <Close />
+              </button>
+            </div>
+            <Sidebaritem href="/dashboard" icon={<Dashboard />} title="Dashboard" collapsed={sidebarCollapsed} />
+            <Sidebaritem href="/transactions" icon={<TransactionsIcon />} title="Transactions" collapsed={sidebarCollapsed} />
+            <Sidebaritem href="/transfer" icon={<TransferIcon />} title="Transfer History" collapsed={sidebarCollapsed} />
+            <Sidebaritem href="/withdraw" icon={<WithdrawIcon />} title="Cash Out" collapsed={sidebarCollapsed} />
+            <Sidebaritem href="/p2ptransfer" icon={<P2PTransfer />} title="P2P Transfer" collapsed={sidebarCollapsed} />
+            <Sidebaritem href="/profile" icon={<ProfileIcon />} title="Profile" collapsed={sidebarCollapsed} />
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-100">
-            <div className="text-xs text-gray-500 text-center">
-              <p>© 2025 CoinPay</p>
-              <p>Version 2.0</p>
+          {!sidebarCollapsed ? (
+            <div className="p-4 border-t border-gray-100">
+              <div className="text-xs text-gray-500 text-center">
+                <p>© 2025 CoinPay</p>
+                <p>Version 2.0</p>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         {/* Main Content Area */}
