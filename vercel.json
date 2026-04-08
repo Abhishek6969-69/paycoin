@@ -1,6 +1,0 @@
-{
-  "framework": "nextjs",
-  "installCommand": "npm install",
-  "buildCommand": "npm run build --workspace=bank-server-wrapper",
-  "outputDirectory": "apps/bank-server/bank-server/.next"
-}

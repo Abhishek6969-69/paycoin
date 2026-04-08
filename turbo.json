@@ -4,7 +4,13 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "bank-server/.next/**",
+        "!bank-server/.next/cache/**"
+      ]
     },
     "lint": {},
     "dev": {
