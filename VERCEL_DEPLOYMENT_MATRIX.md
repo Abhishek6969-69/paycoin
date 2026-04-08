@@ -67,6 +67,7 @@ Use this matrix to deploy each app as an independent Vercel project and avoid mo
 
 ## Quick Validation Checklist
 
+
 1. `user-app` can open `/transactions` and `/profile`.
 2. `bank-server` `/start-payment` loads successfully.
 3. Approve/decline from bank simulator redirects back to `user-app`.
