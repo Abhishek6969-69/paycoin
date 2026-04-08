@@ -31,6 +31,38 @@ function printDiagnostics(cwd, inner) {
   console.log('--- end diagnostics ---');
 }
 
+function run(cmd, args, cwd, allowFailure = false) {
+  const res = spawnSync(cmd, args, { stdio: 'inherit', cwd, env: process.env });
+  if (res.error) {
+    console.error(`Failed to run ${cmd} ${args.join(' ')}:`, res.error.message);
+    if (!allowFailure) process.exit(1);
+    return false;
+  }
+  if (typeof res.status === 'number' && res.status !== 0) {
+    if (!allowFailure) {
+      console.error(`${cmd} ${args.join(' ')} exited with status`, res.status);
+      process.exit(res.status);
+    }
+    return false;
+  }
+  return true;
+}
+
+function ensureInnerDependencies(dir) {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return;
+
+  const nodeModulesPath = path.join(dir, 'node_modules');
+  const hasNodeModules = fs.existsSync(nodeModulesPath);
+
+  // Vercel/root installs do not always install nested package dependencies.
+  // Install inner deps only when needed, so wrapper builds remain reliable.
+  if (!hasNodeModules) {
+    console.log('Inner node_modules not found. Installing dependencies in:', dir);
+    run('npm', ['install', '--no-audit', '--no-fund'], dir);
+  }
+}
+
 function runBuildAt(dir) {
   console.log(`Running npm run build in: ${dir}`);
   const pkgPath = path.join(dir, 'package.json');
@@ -46,15 +78,8 @@ function runBuildAt(dir) {
     console.warn('No package.json found in inner dir');
   }
 
-  const res = spawnSync('npm', ['run', 'build'], { stdio: 'inherit', cwd: dir, env: process.env });
-  if (res.error) {
-    console.error('Failed to run build:', res.error && res.error.message);
-    process.exit(1);
-  }
-  if (typeof res.status === 'number' && res.status !== 0) {
-    console.error('Inner build exited with status', res.status);
-    process.exit(res.status);
-  }
+  ensureInnerDependencies(dir);
+  run('npm', ['run', 'build'], dir);
   process.exit(0);
 }
 

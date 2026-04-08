@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Input from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
@@ -16,8 +16,13 @@ export default function SignUpPage() {
     });
 
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const error = searchParams.get("error");
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const sp = new URLSearchParams(window.location.search);
+        setError(sp.get("error"));
+    }, []);
 
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");

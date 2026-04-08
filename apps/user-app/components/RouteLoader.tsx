@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAV_EVENT = "coinpay:navigation-start";
@@ -13,7 +13,6 @@ export function startRouteLoading() {
 
 export default function RouteLoader() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
   const startTimeRef = useRef<number>(0);
 
@@ -65,7 +64,7 @@ export default function RouteLoader() {
     }, remaining);
 
     return () => window.clearTimeout(timer);
-  }, [pathname, searchParams, pending]);
+  }, [pathname, pending]);
 
   return (
     <div

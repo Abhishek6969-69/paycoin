@@ -1,9 +1,8 @@
 {
   "/Landingpage/page": "app/Landingpage/page.js",
+  "/api/user/balance/route": "app/api/user/balance/route.js",
   "/api/user/route": "app/api/user/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
   "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
-  "/(dashboard)/profile/page": "app/(dashboard)/profile/page.js",
-  "/(dashboard)/p2ptransfer/page": "app/(dashboard)/p2ptransfer/page.js"
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js"
 }

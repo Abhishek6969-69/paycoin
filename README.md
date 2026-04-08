@@ -2,6 +2,12 @@
 
 This is an official starter Turborepo.
 
+## Deployment Setup (CoinPay)
+
+Use this guide for correct Vercel project split and env variables:
+
+- [Vercel Deployment Matrix](/Users/abhishekyadav/Desktop/coinpay/VERCEL_DEPLOYMENT_MATRIX.md)
+
 ## Using this example
 
 Run the following command:

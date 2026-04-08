@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { startRouteLoading } from "./RouteLoader";
 
 export default function WalletClient() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -21,8 +20,9 @@ export default function WalletClient() {
     if (!isClient) return;
 
     try {
-      const statusParam = searchParams?.get("status");
-      const tokenParam = searchParams?.get("token");
+      const sp = new URLSearchParams(window.location.search);
+      const statusParam = sp.get("status");
+      const tokenParam = sp.get("token");
       
       setStatus(statusParam);
       setToken(tokenParam);
@@ -40,7 +40,7 @@ export default function WalletClient() {
       startRouteLoading();
       router.push("/transactions");
     }
-  }, [searchParams, router, isClient]);
+  }, [router, isClient]);
 
   if (!isClient) {
     return (
